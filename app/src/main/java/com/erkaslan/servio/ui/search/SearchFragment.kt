@@ -12,19 +12,36 @@ import com.erkaslan.servio.R
 import com.erkaslan.servio.databinding.FragmentHomeBinding
 import com.erkaslan.servio.databinding.FragmentSearchBinding
 import com.erkaslan.servio.ui.home.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private lateinit var searchViewModel: SearchViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_search, container, false)
+        initViews()
+        initObservers()
+    }
 
-        searchViewModel.text.observe(viewLifecycleOwner, Observer {
+    fun initViews(){
+        //searchViewModel.getAllServices()
+    }
 
-        })
-        return root
+    fun initObservers(){
+
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
