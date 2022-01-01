@@ -7,6 +7,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.erkaslan.servio.databinding.ActivityMainBinding
+import com.erkaslan.servio.manager.RunOnceManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,5 +29,8 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_home, R.id.navigation_search, R.id.navigation_dashboard, R.id.navigation_profile))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+
+        RunOnceManager().runOnce(context = this)
+
     }
 }

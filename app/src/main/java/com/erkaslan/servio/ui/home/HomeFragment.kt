@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.databinding.FragmentHomeBinding
+import com.erkaslan.servio.manager.RunOnceManager
 import com.erkaslan.servio.model.RetrofitClient
 import com.erkaslan.servio.model.User
 import com.erkaslan.servio.model.UserService
@@ -38,13 +39,12 @@ class HomeFragment : Fragment() {
 
     fun initViews(){
         homeViewModel.getAllServices()
+        binding.textHome.setOnClickListener {
+            context?.let { it -> RunOnceManager().runOnce(it) }
+        }
     }
 
     fun initObservers(){
-
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            binding.textHome.text = it
-        })
 
         homeViewModel.allServicesMutableLiveData?.observe(viewLifecycleOwner, { listOfServices ->
 

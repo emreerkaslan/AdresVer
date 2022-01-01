@@ -23,8 +23,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/container_profile_authentication"
@@ -38,7 +37,7 @@
                     android:text="@string/login"
                     android:textAlignment="center"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="40dp"/>
+                    android:layout_marginTop="20dp"/>
                 <EditText
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
@@ -86,6 +85,24 @@
                     android:layout_height="@dimen/et_height"
                     app:layout_constraintTop_toBottomOf="@+id/et_password_register"
                     android:hint="Email"/>
+                <EditText
+                    android:id="@+id/et_bio_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    app:layout_constraintTop_toBottomOf="@+id/et_email_register"
+                    android:hint="Bio"/>
+                <EditText
+                    android:id="@+id/et_interest_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    app:layout_constraintTop_toBottomOf="@+id/et_bio_register"
+                    android:hint="What is your main interest?"/>
+                <EditText
+                    android:id="@+id/et_competency_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    app:layout_constraintTop_toBottomOf="@+id/et_interest_register"
+                    android:hint="What is your main competency?"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

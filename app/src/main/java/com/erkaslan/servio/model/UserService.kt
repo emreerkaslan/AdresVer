@@ -1,9 +1,7 @@
 package com.erkaslan.servio.model
 
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserService {
 
@@ -16,4 +14,9 @@ interface UserService {
     @GET("service/")
     fun getAllServices(): Call<List<Service>>
 
+    @POST("user/login/")
+    fun userLogin(@Body credentials: HashMap<String, String>): Call<Token>
+
+    @GET("user/{username}/")
+    fun loginCheck(@Header("Authorization") token: String, @Path("username") username: String): Call<User>
 }

@@ -7,4 +7,5 @@
     <string name="search">Search</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="home_latest_news">Latest News from Servio Community</string>
 </resources>
