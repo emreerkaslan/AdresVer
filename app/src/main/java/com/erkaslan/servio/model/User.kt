@@ -27,5 +27,23 @@ data class User(
     var interest: String = "",
     @SerializedName("competency")
     @Expose
-    var competency: String = ""
+    var competency: String = "",
+    @SerializedName("credits")
+    @Expose
+    var credits: Int = 5,
+    @SerializedName("profilePic")
+    @Expose
+    var profilePic: String,
+    @SerializedName("badge")
+    @Expose
+    var badge: String,
+    @SerializedName("service")
+    @Expose
+    var service: List<Service>? = null,
+    @SerializedName("following")
+    @Expose
+    var following: List<User>? = null,
+    @SerializedName("feedbacks")
+    @Expose
+    var feedbacks: List<Feedback>? = null,
 )

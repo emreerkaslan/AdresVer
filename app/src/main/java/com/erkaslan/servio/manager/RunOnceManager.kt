@@ -14,16 +14,13 @@ import retrofit2.Response
 import com.google.gson.Gson
 
 
-
-
-
 class RunOnceManager () {
     lateinit var userService: UserService
     lateinit var userList: MutableList<User>
 
     fun runOnce(context: Context){
         val service = RetrofitClient.getClient().create(UserService::class.java)
-        var sharedPreferences: SharedPreferences.Editor? = context.getSharedPreferences("app", Context.MODE_PRIVATE)?.edit()
+        val sharedPreferences: SharedPreferences.Editor? = context.getSharedPreferences("app", Context.MODE_PRIVATE)?.edit()
 
         authenticate(context, sharedPreferences, service)
 
@@ -35,8 +32,7 @@ class RunOnceManager () {
         val token: String? = context.getSharedPreferences("app", Context.MODE_PRIVATE).getString("token", "null")
         val username: String? = context.getSharedPreferences("app", Context.MODE_PRIVATE).getString("username", "null")
         if(token.equals("null") || token.isNullOrEmpty() || username.equals("null") || username.isNullOrEmpty()){
-            sharedPreferences?.putBoolean("isLoggedIn", false)
-            sharedPreferences?.commit()
+            sharedPreferences?.putBoolean("isLoggedIn", false)?.commit()
         }else{
             Log.d("EX", token)
             Log.d("EX", username)
@@ -47,23 +43,22 @@ class RunOnceManager () {
                     Log.d("EX", response.body().toString())
                     if (response.isSuccessful) {
                         Toast.makeText(context, "User is logged in as user: " + response.body()?.pk.toString() , Toast.LENGTH_LONG).show()
-                        sharedPreferences?.putBoolean("isLoggedIn", true)
                         val user = response.body() as User
                         val gson = Gson()
                         val json = gson.toJson(user)
-                        sharedPreferences?.putString("currentUser", json)
-                        sharedPreferences?.commit()
+                        sharedPreferences?.putBoolean("isLoggedIn", true)?.putString("currentUser", json)?.commit()
                     } else if (response.code() == 400) {
+                        sharedPreferences?.putBoolean("isLoggedIn", false)?.commit()
                         Log.d("EX",response.errorBody().toString())
                     }
                     else if (response.code() == 301){
-                        sharedPreferences?.putBoolean("isLoggedIn", false)
-                        sharedPreferences?.commit()
+                        sharedPreferences?.putBoolean("isLoggedIn", false)?.commit()
                         Log.d("EX", "Not Successfull")
                     }
                 }
 
                 override fun onFailure(call: Call<User>, t: Throwable) {
+                    sharedPreferences?.putBoolean("isLoggedIn", false)?.commit()
                     Log.d("EX", "Failed: " + t.toString())
                 }
             })

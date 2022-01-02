@@ -87,11 +87,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     interest = models.CharField(verbose_name='interest', max_length=255,)
 
-    service = models.ManyToManyField('service.Service', related_name="services", null=True, blank=True)
+    service = models.ManyToManyField('service.Service', related_name="services", blank=True)
 
-    following = models.ManyToManyField('user.User', related_name="userFollowing", null=True, blank=True)
+    following = models.ManyToManyField('user.User', related_name="userFollowing", blank=True)
 
-    feedbacks = models.ManyToManyField('feedback.Feedback', related_name="feedbacks", null=True, blank=True)
+    feedbacks = models.ManyToManyField('feedback.Feedback', related_name="feedbacks", blank=True)
 
     competency = models.CharField(verbose_name='competency', max_length=255,)
 

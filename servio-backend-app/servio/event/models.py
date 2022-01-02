@@ -7,7 +7,7 @@ class Event(models.Model):
 
     organizer = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='organizer')
 
-    attendees = models.ManyToManyField('user.User', related_name='attendee', null=True, blank=True)
+    attendees = models.ManyToManyField('user.User', related_name='attendee', blank=True)
 
     date = models.DateTimeField()
 

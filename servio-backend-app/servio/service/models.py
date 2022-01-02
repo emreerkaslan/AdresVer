@@ -24,7 +24,7 @@ class Service(models.Model):
 
     isActive = models.BooleanField(verbose_name='active', default=True)
 
-    requests = models.ManyToManyField('user.User', related_name="requests", null=True, blank=True)
+    requests = models.ManyToManyField('user.User', related_name="requests", blank=True)
 
     picture = models.CharField(verbose_name='picture', max_length=511, default='https://bcw.org.au/wp-content/uploads/2020/02/BCWS-rebrand-37-2048x668.png')
 
