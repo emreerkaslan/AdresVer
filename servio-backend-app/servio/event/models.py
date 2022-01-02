@@ -7,7 +7,7 @@ class Event(models.Model):
 
     organizer = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='organizer')
 
-    attendees = models.ManyToManyField('user.User', related_name='attendee', blank=True)
+    attendees = models.ManyToManyField('user.User', related_name='attendee', null=True, blank=True)
 
     date = models.DateTimeField()
 
@@ -17,13 +17,24 @@ class Event(models.Model):
 
     description = models.CharField(verbose_name='description', max_length=1023,)
 
+    picture = models.CharField(verbose_name='picture', max_length=511, default='https://media-exp1.licdn.com/dms/image/C511BAQFDjtrS0u76Tw/company-background_10000/0/1585488022941?e=1641214800&v=beta&t=7-RygNRYRMFQVUc3_WeXIQNWwX-u46UAEoR-ooMWqEY')
+
     isActive = models.BooleanField(default=True)
 
-    hasQuota = models.BooleanField(default=True)
+    hasQuota = models.BooleanField(default=False)
 
     quota = models.IntegerField(null=True, blank=True)
 
-    def __str__(self):
-        return self.title
+    REQUIRED_FIELDS = ['title', 'organizer', 'date', 'geolocation', 'address', 'description',]
+
+    def __int__(self):
+        return self.pk
+
+    def deactivate(self):
+        if self.isActive:
+            self.isActive = False
+        else:
+            self.isActive = True
+
 
 admin.site.register(Event)

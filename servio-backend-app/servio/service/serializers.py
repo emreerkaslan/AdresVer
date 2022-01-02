@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from .models import Service
+from django.utils.timezone import now
 
 
 class ServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Service
-        fields = ['pk', 'title', 'description', 'date', 'geolocation', 'giver', 'credits']
+        fields = ['pk', 'title', 'description', 'date', 'geolocation', 'giver', 'taker', 'credits', 'recurring',
+                  'requests', 'feedbackGiven', 'tags']
 
         def create(self, validated_data):
             service = Service.objects.create(
@@ -17,6 +19,11 @@ class ServiceSerializer(serializers.ModelSerializer):
                 giver=validated_data.get("giver"),
                 taker="Default",
                 credits=validated_data.get("credits"),
+                recurring=False,
+                isActive=True,
+                tags=validated_data.get("tags"),
+                requests=None,
+                feedbackGiven=False
                 **validated_data)
             return service
 

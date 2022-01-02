@@ -8,12 +8,12 @@ from django.contrib import admin
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, name, bio, geolocation, interest, competency, password=None):
+    def create_user(self, username, email, name, bio, geolocation, interest, competency, password):
         """
         Creates and saves a User
         """
         if password is None:
-            raise TypeError('Superusers must have a password.')
+            raise TypeError('Users must have a password.')
 
         if not password:
             raise TypeError('Users must have a password.')
@@ -75,71 +75,43 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(
-        db_index=True,
-        verbose_name='username',
-        max_length=255,
-        unique=True,
-    )
+    username = models.CharField(db_index=True, verbose_name='username', max_length=255, unique=True,)
 
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name='email address', max_length=255, unique=True,)
 
-    name = models.CharField(
-        verbose_name='name',
-        max_length=255,
-    )
+    name = models.CharField(verbose_name='name', max_length=255,)
 
-    bio = models.CharField(
-        verbose_name='bio',
-        max_length=255,
-    )
+    bio = models.CharField(verbose_name='bio', max_length=255,)
 
-    geolocation = models.CharField(
-        verbose_name='geolocation',
-        max_length=255,
-    )
+    geolocation = models.CharField(verbose_name='geolocation', max_length=255,)
 
-    interest = models.CharField(
-        verbose_name='interest',
-        max_length=255,
-    )
+    interest = models.CharField(verbose_name='interest', max_length=255,)
 
-    competency = models.CharField(
-        verbose_name='competency',
-        max_length=255,
-    )
+    service = models.ManyToManyField('service.Service', related_name="services", null=True, blank=True)
 
-    badge = models.CharField(
-        verbose_name='badge',
-        default='Fasulye',
-        max_length=255,
-    )
+    following = models.ManyToManyField('user.User', related_name="userFollowing", null=True, blank=True)
 
-    credits = models.IntegerField(
-        verbose_name='credits',
-        default=5,
-    )
+    feedbacks = models.ManyToManyField('feedback.Feedback', related_name="feedbacks", null=True, blank=True)
 
-    profilePic = models.CharField(
-        verbose_name='profile picture',
-        max_length=255
-    )
+    competency = models.CharField(verbose_name='competency', max_length=255,)
 
-    isActive = models.BooleanField(default=True)
+    badge = models.CharField(verbose_name='badge', default='Newcomer', max_length=255,)
+
+    credits = models.IntegerField(verbose_name='credits', default=5,)
+
+    profilePic = models.CharField(verbose_name='profile picture', default='https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Clipart.png', max_length=511)
+
+    isActive = models.BooleanField(verbose_name='active', default=True)
+
     is_admin = models.BooleanField(default=False)
-    #isSuperuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'name', 'bio', 'geolocation', 'interest', 'competency']
 
     objects = UserManager()
 
-    def __str__(self):
-        return self.username
+    def __int__(self):
+        return self.pk
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -158,10 +130,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
     def deactivate(self):
-        if self.is_active:
-            self.is_active = False
+        if self.isActive:
+            self.isActive = False
         else:
-            self.is_active = True
+            self.isActive = True
 
     @receiver(post_save, sender=settings.AUTH_USER_MODEL)
     def create_auth_token(sender, instance=None, created=False, **kwargs):

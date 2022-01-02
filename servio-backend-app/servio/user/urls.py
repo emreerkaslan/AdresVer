@@ -1,7 +1,5 @@
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
-
-from .views import UserCreate, UserList, UserDetail, UserUpdate, UserDelete, login, loginCheck
+from .views import UserCreate, UserList, UserDetail, UserUpdate, UserDelete, login, loginCheck, getFeedback, getService, follow, unfollow
 
 urlpatterns = [
     path('create/', UserCreate.as_view(), name='create-user'),
@@ -12,4 +10,8 @@ urlpatterns = [
     path('delete/<int:pk>/', UserDelete.as_view(), name='delete-user'),
     path('login/', login, name='login'),
     path('<str:username>/', loginCheck, name='login-check'),
+    path('<int:pk>/feedback', getFeedback, name='user-feedbacks'),
+    path('<int:pk>/service', getService, name='user-services'),
+    path('follow/<int:follower>/<int:followed>', follow, name='user-follow'),
+    path('unfollow/<int:follower>/<int:followed>', follow, name='user-unfollow'),
 ]

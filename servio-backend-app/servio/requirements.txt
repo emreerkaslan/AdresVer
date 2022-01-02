@@ -1,5 +1,4 @@
 asgiref==3.4.1
-decouple==0.0.7
 Django==4.0
 django-rest-auth==0.9.5
 djangorestframework==3.13.1
