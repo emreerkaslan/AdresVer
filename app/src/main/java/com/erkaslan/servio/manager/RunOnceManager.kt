@@ -47,6 +47,7 @@ class RunOnceManager () {
                         val gson = Gson()
                         val json = gson.toJson(user)
                         sharedPreferences?.putBoolean("isLoggedIn", true)?.putString("currentUser", json)?.commit()
+                        Log.d("EX", context.getSharedPreferences("app", Context.MODE_PRIVATE)?.getString("currentUser", "") ?: "")
                     } else if (response.code() == 400) {
                         sharedPreferences?.putBoolean("isLoggedIn", false)?.commit()
                         Log.d("EX",response.errorBody().toString())

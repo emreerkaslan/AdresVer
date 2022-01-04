@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class Service(
+data class Event(
     @SerializedName("pk")
     @Expose
     var pk: Int = 0,
@@ -22,26 +22,20 @@ data class Service(
     var geolocation: String = "",
     @SerializedName("picture")
     @Expose
-    var picture: String = "",
-    @SerializedName("giver")
+    var picture: String,
+    @SerializedName("organizer")
     @Expose
-    var giver: Int,
-    @SerializedName("taker")
+    var organizer: Int,
+    @SerializedName("address")
     @Expose
-    var taker: Int? = null,
-    @SerializedName("feedbackGiven")
-    @Expose
-    var feedbackGiven: Boolean = false,
-    @SerializedName("recurring")
+    var address: String,
+    @SerializedName("hasQuota")
     @Expose
     var recurring: Boolean,
-    @SerializedName("credits")
+    @SerializedName("quota")
     @Expose
-    var credits: Int,
-    @SerializedName("requests")
+    var quota: Int,
+    @SerializedName("attendees")
     @Expose
-    var requests: List<User>? = null,
-    @SerializedName("tags")
-    @Expose
-    var tags: List<String>
+    var attendees: List<User>
 )

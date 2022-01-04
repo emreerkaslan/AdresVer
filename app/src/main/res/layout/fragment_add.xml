@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="isService"
+            type="Boolean" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/container_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/btn_service_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@color/blue"
+                    android:text="Service" />
+
+                <Button
+                    android:id="@+id/btn_event_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@color/orange"
+                    android:text="Event" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_event_creation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="20dp"
+                android:visibility="@{isService ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_buttons">
+
+                <TextView
+                    android:id="@+id/tv_event_creation_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tv_height"
+                    android:text="Create An Event"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/et_event_creation_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Title"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_event_creation_header" />
+
+                <EditText
+                    android:id="@+id/et_event_creation_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Describe and give details"
+                    app:layout_constraintTop_toBottomOf="@+id/et_event_creation_title" />
+
+                <ImageView
+                    android:id="@+id/iv_event_creation"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_default_profile_pic"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_event_creation_description" />
+
+                <Button
+                    android:id="@+id/btn_add_event_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/et_height"
+                    android:layout_marginStart="40dp"
+                    android:text="Select Event Image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_event_creation" />
+
+                <TextView
+                    android:id="@+id/tv_event_image_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Optional"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_add_event_picture"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/btn_add_event_picture"
+                    app:layout_constraintTop_toTopOf="@id/btn_add_event_picture" />
+
+                <DatePicker
+                    android:id="@+id/dp_event_creation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/btn_add_event_picture" />
+
+                <TimePicker
+                    android:id="@+id/tp_event_creation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
+                    app:layout_constraintTop_toBottomOf="@id/dp_event_creation" />
+
+                <EditText
+                    android:id="@+id/et_event_creation_geolocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Geolocation"
+                    app:layout_constraintTop_toBottomOf="@+id/tp_event_creation" />
+
+                <EditText
+                    android:id="@+id/et_event_creation_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Full Address"
+                    app:layout_constraintTop_toBottomOf="@+id/et_event_creation_geolocation" />
+
+                <CheckBox
+                    android:id="@+id/cb_event_creation_quota"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="There is quota"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_event_creation_address" />
+
+                <EditText
+                    android:id="@+id/et_event_creation_quota"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Quota"
+                    android:visibility="@{cbEventCreationQuota.checked ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="@+id/cb_event_creation_quota"
+                    app:layout_constraintStart_toEndOf="@id/cb_event_creation_quota"
+                    app:layout_constraintTop_toTopOf="@+id/cb_event_creation_quota"
+                    android:inputType="number" />
+
+                <Button
+                    android:id="@+id/btn_event_create"
+                    android:layout_width="100dp"
+                    android:layout_height="@dimen/et_height"
+                    android:text="Create"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cb_event_creation_quota" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_service_creation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="20dp"
+                android:visibility="@{isService ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_buttons">
+
+                <TextView
+                    android:id="@+id/tv_service_creation_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tv_height"
+                    android:text="Create A Service"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/et_service_creation_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Title"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_service_creation_header" />
+
+                <EditText
+                    android:id="@+id/et_service_creation_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Describe and give details"
+                    app:layout_constraintTop_toBottomOf="@+id/et_service_creation_title" />
+
+                <ImageView
+                    android:id="@+id/iv_service_creation"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_default_profile_pic"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_service_creation_description" />
+
+                <Button
+                    android:id="@+id/btn_add_service_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/et_height"
+                    android:layout_marginStart="40dp"
+                    android:text="Select Service Image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_service_creation" />
+
+                <TextView
+                    android:id="@+id/tv_service_image_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Optional"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_add_service_picture"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/btn_add_service_picture"
+                    app:layout_constraintTop_toTopOf="@id/btn_add_service_picture" />
+
+                <DatePicker
+                    android:id="@+id/dp_service_creation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/btn_add_service_picture" />
+
+                <TimePicker
+                    android:id="@+id/tp_service_creation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
+                    app:layout_constraintTop_toBottomOf="@id/dp_service_creation" />
+
+                <EditText
+                    android:id="@+id/et_service_creation_geolocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Geolocation"
+                    app:layout_constraintTop_toBottomOf="@+id/tp_service_creation" />
+
+                <EditText
+                    android:id="@+id/et_service_creation_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    android:hint="Full Address"
+                    app:layout_constraintTop_toBottomOf="@+id/et_service_creation_geolocation" />
+
+                <CheckBox
+                    android:id="@+id/cb_service_creation_recurring"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Recurring"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_service_creation_address" />
+
+                <EditText
+                    android:id="@+id/et_service_creation_credits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Credits"
+                    app:layout_constraintBottom_toBottomOf="@+id/cb_service_creation_recurring"
+                    app:layout_constraintStart_toEndOf="@id/cb_service_creation_recurring"
+                    app:layout_constraintTop_toTopOf="@+id/cb_service_creation_recurring"
+                    android:inputType="number" />
+
+                <EditText
+                    android:id="@+id/et_service_creation_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter tags randomly"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_service_creation_recurring" />
+
+                <Button
+                    android:id="@+id/btn_service_create"
+                    android:layout_width="100dp"
+                    android:layout_height="@dimen/et_height"
+                    android:text="Create"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_service_creation_tags" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

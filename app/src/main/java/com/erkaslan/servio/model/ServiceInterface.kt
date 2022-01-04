@@ -19,3 +19,13 @@ interface SignupInterface {
     fun onSignup(user: User)
     fun onSignupFailure(error: Error)
 }
+
+interface CreateServiceInterface {
+    fun onCreateService(service: Service)
+    fun onCreateServiceFailure(servioException: ServioException)
+}
+
+interface CreateEventInterface {
+    fun onCreateEvent(event: Event)
+    fun onCreateEventFailure(servioException: ServioException)
+}

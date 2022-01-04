@@ -92,4 +92,53 @@ class AllUtil () {
         map.put(true, "Alright")
         return map
     }
+
+    fun validateServiceCreation(service: HashMap<String, String>): HashMap<String, String> {
+        var map = HashMap<String, String>()
+
+        if (service.get("title").isNullOrEmpty()) {
+            map.put("message", "Title is missing")
+            map.put("result", "false")
+            return map
+        }
+
+        if (service.get("description").isNullOrEmpty()) {
+            map.put("message", "Description is missing")
+            map.put("result", "false")
+            return map
+        }
+
+        if (service.get("credits").isNullOrEmpty()) {
+            map.put("message", "Credit amount is missing")
+            map.put("result", "false")
+            return map
+        }
+
+        if (Integer.parseInt(service.get("credits")) < 0 || Integer.parseInt(service.get("credits")) > 15) {
+            map.put("message", "Credit amount can't be less than 0 or more than 15")
+            map.put("result", "false")
+            return map
+        }
+
+        if (service.get("geolocation").isNullOrEmpty()) {
+            map.put("message", "Geolocation is missing")
+            map.put("result", "false")
+            return map
+        }
+
+        if (service.get("recurring").isNullOrEmpty()) {
+            map.put("message", "Recurring info is missing")
+            map.put("result", "false")
+            return map
+        }
+
+        if (service.get("date").isNullOrEmpty()) {
+            map.put("message", "Date is missing")
+            map.put("result", "false")
+            return map
+        }
+
+        service.put("result", "true")
+        return service
+    }
 }

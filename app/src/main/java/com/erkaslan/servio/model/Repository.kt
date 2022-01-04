@@ -102,4 +102,40 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
             }
         })
     }
+
+    //Creates service
+    fun createService(service: Service, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).createService(service)
+        service.enqueue(object : Callback<Service> {
+            override fun onResponse(call: Call<Service>, response: Response<Service>) {
+                if (response.isSuccessful) {
+                    createServiceInterface.onCreateService(response.body() as Service)
+                } else {
+                    createServiceInterface.onCreateServiceFailure(ServioException("Failed Service Creation"))
+                }
+            }
+
+            override fun onFailure(call: Call<Service>, t: Throwable) {
+                createServiceInterface.onCreateServiceFailure(ServioException("Failed Service Creation"))
+            }
+        })
+    }
+
+    //Creates event
+    fun createEvent(map: HashMap<String, String>, createEventInterface: CreateEventInterface){
+        var event = getClient().create(UserService::class.java).createEvent(map)
+        event.enqueue(object : Callback<Event> {
+            override fun onResponse(call: Call<Event>, response: Response<Event>) {
+                if (response.isSuccessful) {
+                    createEventInterface.onCreateEvent(response.body() as Event)
+                } else {
+                    createEventInterface.onCreateEventFailure(ServioException("Failed Service Creation"))
+                }
+            }
+
+            override fun onFailure(call: Call<Event>, t: Throwable) {
+                createEventInterface.onCreateEventFailure(ServioException("Failed Service Creation"))
+            }
+        })
+    }
 }
