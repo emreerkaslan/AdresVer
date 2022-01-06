@@ -54,6 +54,10 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return homeRowList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return homeRowList[position].type
+    }
+
 }
 
 class ServiceViewHolder(val binding: RowLayoutServiceListBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -18,7 +18,7 @@ class EventListAdapter (var eventList: List<Event>): RecyclerView.Adapter<EventI
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return if(eventList.size<5) eventList.size else 5
     }
 
     override fun onBindViewHolder(holder: EventItemViewHolder, position: Int) {
@@ -36,11 +36,8 @@ class EventItemViewHolder(var binding: RowEventItemBinding): RecyclerView.ViewHo
 
     fun bind(event: Event) {
         binding.event = event
-        binding.tvEventQuota.text = (event.quota - event.attendees.size).toString()
         util.glide(binding.ivEvent.context, Uri.parse(event.picture), binding.ivEvent)
-        if(!event.hasQuota){
-            binding.ivEvent
-        } else {
+        if(event.hasQuota){
             binding.quota = event.quota.toString()
         }
     }

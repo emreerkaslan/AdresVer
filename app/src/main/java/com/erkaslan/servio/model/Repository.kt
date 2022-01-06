@@ -32,7 +32,7 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
         service.enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
-                Log.d("EX", response.body().toString())
+                Log.d("REPO", response.body().toString())
                 if (response.isSuccessful) {
                     serviceInterface.onAllServicesTaken(response.body() as List<Service>)
                 } else if (response.code() == 400) {
@@ -50,11 +50,11 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     //Gets a all events
     fun getAllEvents(serviceInterface: AllEventsInterface){
         userService = getClient().create(UserService::class.java)
-        var service = userService.getAllEvents()
+        var event = userService.getAllEvents()
 
-        service.enqueue(object : Callback<List<Event>> {
+        event.enqueue(object : Callback<List<Event>> {
             override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
-                Log.d("EX", response.body().toString())
+                Log.d("REPO", response.body().toString())
                 if (response.isSuccessful) {
                     serviceInterface.onAllEventsTaken(response.body() as List<Event>)
                 } else if (response.code() == 400) {

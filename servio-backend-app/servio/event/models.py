@@ -17,7 +17,7 @@ class Event(models.Model):
 
     description = models.CharField(verbose_name='description', max_length=1023,)
 
-    picture = models.CharField(verbose_name='picture', max_length=511, default='https://media-exp1.licdn.com/dms/image/C511BAQFDjtrS0u76Tw/company-background_10000/0/1585488022941?e=1641214800&v=beta&t=7-RygNRYRMFQVUc3_WeXIQNWwX-u46UAEoR-ooMWqEY')
+    picture = models.CharField(verbose_name='picture', max_length=511, default='https://bevents.co/wp-content/uploads/2020/02/events.jpg')
 
     isActive = models.BooleanField(default=True)
 

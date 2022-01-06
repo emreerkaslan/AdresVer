@@ -154,3 +154,34 @@ def unfollow(request, follower, followed):
     else:
         serializer = UserSerializer(follower)
         return JsonResponse(serializer.errors, status=400)
+
+@api_view(['POST'])
+def userCreate(request):
+    data = request.data["nameValuePairs"]
+    print(request.data)
+    try:
+        username = data.get("username")
+        name = data.get("name")
+        geolocation = data.get("geolocation")
+        interest = data.get("interest")
+        competency = data.get("competency")
+        email = data.get("email")
+        password = data.get("password")
+        bio = data.get("bio")
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    user = User(
+            username=username,
+            email=email,
+            name=name,
+            bio=bio,
+            password=password,
+            geolocation=geolocation,
+            interest=interest,
+            competency=competency,
+        )
+    if 'picture' in request.data:
+        user.picture = data.get('picture')
+    user.save()
+    serializer = UserSerializer(user)
+    return JsonResponse(serializer.data, status=201)

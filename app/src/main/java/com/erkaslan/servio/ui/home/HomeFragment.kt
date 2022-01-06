@@ -41,6 +41,7 @@ class HomeFragment : Fragment() {
     fun initViews(){
         binding.rvHomepage.adapter = HomeAdapter()
         homeViewModel.getAllServices()
+        homeViewModel.getAllEvents()
 
         binding.textHome.setOnClickListener {
             context?.let { it -> RunOnceManager().runOnce(it) }
@@ -61,6 +62,31 @@ class HomeFragment : Fragment() {
                             (binding.rvHomepage.adapter as HomeAdapter).homeRowList[index] = HomeRowItem.ServicesAround(listData)
                         } else {
                             (binding.rvHomepage.adapter as HomeAdapter).homeRowList.add(HomeRowItem.ServicesAround(listData))
+                        }
+                        Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
+                        (binding.rvHomepage.adapter as HomeAdapter).notifyDataSetChanged()
+                    }else {
+                        Toast.makeText(context, "Fail", Toast.LENGTH_LONG).show()
+                    }
+                }
+                is GenericResult.Failure -> {}
+                else -> {}
+            }
+        })
+
+        homeViewModel.allEventsMutableLiveData.observe(viewLifecycleOwner, {
+            when(it) {
+                is GenericResult.Success -> {
+                    Log.d("EX", "Events: " + it.data.toString())
+                    val listData = it.data
+                    if (listData != null && listData.size > 0 ) {
+                        val index = (binding.rvHomepage.adapter as HomeAdapter).homeRowList.let {
+                            it.indexOf(it.filterIsInstance<HomeRowItem.EventsAround>().firstOrNull())
+                        }
+                        if(index > -1){
+                            (binding.rvHomepage.adapter as HomeAdapter).homeRowList[index] = HomeRowItem.EventsAround(listData)
+                        } else {
+                            (binding.rvHomepage.adapter as HomeAdapter).homeRowList.add(HomeRowItem.EventsAround(listData))
                         }
                         Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
                         (binding.rvHomepage.adapter as HomeAdapter).notifyDataSetChanged()

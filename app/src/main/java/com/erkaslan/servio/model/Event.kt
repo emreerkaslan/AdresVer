@@ -22,20 +22,20 @@ data class Event(
     var geolocation: String = "",
     @SerializedName("picture")
     @Expose
-    var picture: String,
+    var picture: String = "",
     @SerializedName("organizer")
     @Expose
     var organizer: Int,
     @SerializedName("address")
     @Expose
-    var address: String,
+    var address: String ="",
     @SerializedName("hasQuota")
     @Expose
     var hasQuota: Boolean,
     @SerializedName("quota")
     @Expose
-    var quota: Int,
+    var quota: Int? = null,
     @SerializedName("attendees")
     @Expose
-    var attendees: List<User>
+    var attendees: List<Int>? = null
 )

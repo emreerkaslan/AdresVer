@@ -16,7 +16,7 @@ class EventSerializer(serializers.ModelSerializer):
                 date=validated_data.get("date"),
                 geolocation=validated_data.get("geolocation"),
                 address=validated_data.get("address"),
-                picture='https://media-exp1.licdn.com/dms/image/C511BAQFDjtrS0u76Tw/company-background_10000/0/1585488022941?e=1641214800&v=beta&t=7-RygNRYRMFQVUc3_WeXIQNWwX-u46UAEoR-ooMWqEY',
+                picture='https://bevents.co/wp-content/uploads/2020/02/events.jpg',
                 hasQuota=validated_data.get("hasQuota"),
                 quota=validated_data.get("quota"),
                 **validated_data)

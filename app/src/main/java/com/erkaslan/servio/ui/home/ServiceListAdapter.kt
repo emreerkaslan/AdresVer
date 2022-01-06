@@ -16,7 +16,7 @@ class ServiceListAdapter (var serviceList: List<Service>): RecyclerView.Adapter<
     }
 
     override fun getItemCount(): Int {
-        return serviceList.size
+        return if(serviceList.size<5) serviceList.size else 5
     }
 
     override fun onBindViewHolder(holder: ServiceItemViewHolder, position: Int) {

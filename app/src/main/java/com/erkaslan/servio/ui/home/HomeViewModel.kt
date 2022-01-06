@@ -46,7 +46,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllServices(){
         repository.getAllServices(object : AllServicesInterface {
             override fun onAllServicesTaken(listOfServices: List<Service>) {
-                allServicesMutableLiveData?.value = GenericResult.Success(listOfServices)
+                allServicesMutableLiveData.value = GenericResult.Success(listOfServices)
             }
         })
     }
@@ -54,7 +54,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllEvents(){
         repository.getAllEvents(object : AllEventsInterface {
             override fun onAllEventsTaken(listOfEvents: List<Event>) {
-                allEventsMutableLiveData?.value = GenericResult.Success(listOfEvents)
+                allEventsMutableLiveData.value = GenericResult.Success(listOfEvents)
             }
         })
     }

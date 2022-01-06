@@ -8,7 +8,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = ['pk', 'title', 'description', 'date', 'geolocation', 'giver', 'taker', 'credits', 'recurring',
-                  'requests', 'feedbackGiven', 'tags']
+                  'requests', 'feedbackGiven', 'tags', 'picture']
 
         def create(self, validated_data):
             service = Service.objects.create(

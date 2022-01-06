@@ -16,9 +16,10 @@
             android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="15dp"
             android:textSize="20sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold"
-            android:text="Services Around You"/>
+            android:text="Services Around You"
+            android:background="@color/deep_blue"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_service_list"
