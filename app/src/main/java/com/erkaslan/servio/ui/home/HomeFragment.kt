@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.databinding.FragmentHomeBinding
 import com.erkaslan.servio.manager.RunOnceManager
+import com.erkaslan.servio.model.GenericResult
 import com.erkaslan.servio.model.RetrofitClient
 import com.erkaslan.servio.model.User
 import com.erkaslan.servio.model.UserService
@@ -38,7 +39,9 @@ class HomeFragment : Fragment() {
     }
 
     fun initViews(){
+        binding.rvHomepage.adapter = HomeAdapter()
         homeViewModel.getAllServices()
+
         binding.textHome.setOnClickListener {
             context?.let { it -> RunOnceManager().runOnce(it) }
         }
@@ -46,14 +49,27 @@ class HomeFragment : Fragment() {
 
     fun initObservers(){
 
-        homeViewModel.allServicesMutableLiveData?.observe(viewLifecycleOwner, { listOfServices ->
-
-            if (listOfServices != null) {
-                binding.rvHomepage.adapter = HomeAdapter(listOfServices ?: listOf())
-                binding.rvHomepage.visibility = View.VISIBLE
-                Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
-            }else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_LONG).show()
+        homeViewModel.allServicesMutableLiveData?.observe(viewLifecycleOwner, {
+            when(it) {
+                is GenericResult.Success -> {
+                    val listData = it.data
+                    if (listData != null && listData.size > 0 ) {
+                        val index = (binding.rvHomepage.adapter as HomeAdapter).homeRowList.let {
+                            it.indexOf(it.filterIsInstance<HomeRowItem.ServicesAround>().firstOrNull())
+                        }
+                        if(index > -1){
+                            (binding.rvHomepage.adapter as HomeAdapter).homeRowList[index] = HomeRowItem.ServicesAround(listData)
+                        } else {
+                            (binding.rvHomepage.adapter as HomeAdapter).homeRowList.add(HomeRowItem.ServicesAround(listData))
+                        }
+                        Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
+                        (binding.rvHomepage.adapter as HomeAdapter).notifyDataSetChanged()
+                    }else {
+                        Toast.makeText(context, "Fail", Toast.LENGTH_LONG).show()
+                    }
+                }
+                is GenericResult.Failure -> {}
+                else -> {}
             }
         })
     }

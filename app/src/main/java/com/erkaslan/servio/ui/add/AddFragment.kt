@@ -54,7 +54,7 @@ class AddFragment : Fragment() {
                 Toast.makeText(context, "Picking a later date than now may be wise", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            var format = SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss.SSSZ"), Locale.getDefault())
+            var format = SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss.Z"), Locale.getDefault())
 
             val tags = binding.etServiceCreationTags.text.toString().split(" ", ",", "#")
 
@@ -76,6 +76,7 @@ class AddFragment : Fragment() {
             } else {
                 //sharedPreferences?.getString("currentUser", "")?["pk"]
                 result.put("giver", "14")
+                result.put("date", "2018-06-14T14:30:02.982009Z")
                 val service = Service(pk = 14,
                     title = binding.etServiceCreationTitle.text.toString(),
                     description = binding.etServiceCreationDescription.text.toString(),
@@ -86,7 +87,8 @@ class AddFragment : Fragment() {
                     geolocation = binding.etServiceCreationGeolocation.text.toString(),
                     giver = 14
                 )
-                Log.d("EX", service.toString())
+                result.remove("result")
+                Log.d("EX", result.toString())
                 addViewModel.createService(service)
             }
         }

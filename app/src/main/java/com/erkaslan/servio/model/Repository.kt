@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.erkaslan.servio.model.RetrofitClient.getClient
+import com.google.gson.Gson
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +23,7 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     override fun onSuccess(service: Service) {}
     override fun onAllServicesTaken(listOfServices: List<Service>) {}
     override fun onLogin(token: Token) {}
-    override fun onFailure(error: Error) {}
+    override fun onFailure(servioException: ServioException) {}
 
     //Gets a all services
     fun getAllServices(serviceInterface: AllServicesInterface){
@@ -41,6 +43,28 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
             }
 
             override fun onFailure(call: Call<List<Service>>, t: Throwable) {
+            }
+        })
+    }
+
+    //Gets a all events
+    fun getAllEvents(serviceInterface: AllEventsInterface){
+        userService = getClient().create(UserService::class.java)
+        var service = userService.getAllEvents()
+
+        service.enqueue(object : Callback<List<Event>> {
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                Log.d("EX", response.body().toString())
+                if (response.isSuccessful) {
+                    serviceInterface.onAllEventsTaken(response.body() as List<Event>)
+                } else if (response.code() == 400) {
+                    Log.v("VER",response.errorBody().toString());
+                }
+                else{
+                }
+            }
+
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
             }
         })
     }
@@ -75,30 +99,53 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
                 if (response.isSuccessful) {
                     loginInterface.onLogin(response.body() as Token)
                 } else {
-                    loginInterface.onFailure(Error("Failed Login"))
+                    loginInterface.onFailure(ServioException("Failed Login"))
                 }
             }
 
             override fun onFailure(call: Call<Token>, t: Throwable) {
-                loginInterface.onFailure(Error("Failed Login"))
+                loginInterface.onFailure(ServioException("Failed Login"))
+            }
+        })
+    }
+
+
+    //Gets user info
+    fun loginCheck(token: String, username: String, loginCheckInterface: LoginCheckInterface){
+        var service = getClient().create(UserService::class.java).loginCheck("Token " + token, username)
+        service.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    loginCheckInterface.onLoginCheck(response.body() as User)
+                } else if (response.code() == 400) {
+                    loginCheckInterface.onLoginFailure(ServioException("Failed Login"))
+                }
+                else if (response.code() == 301){
+                    loginCheckInterface.onLoginFailure(ServioException("Failed Login"))
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                loginCheckInterface.onLoginFailure(ServioException("Failed Login"))
             }
         })
     }
 
     //Signs user up
-    fun signup(map: HashMap<String, String>, signupInterface: SignupInterface){
+    fun signup(map: JSONObject, signupInterface: SignupInterface){
         var service = getClient().create(UserService::class.java).signup(map)
+        Log.d("EX", "YYY: " + map)
         service.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful) {
                     signupInterface.onSignup(response.body() as User)
                 } else {
-                    signupInterface.onSignupFailure(Error("Failed Signup"))
+                    signupInterface.onSignupFailure(ServioException("Failed Signup"))
                 }
             }
 
             override fun onFailure(call: Call<User>, t: Throwable) {
-                signupInterface.onSignupFailure(Error("Failed Signup"))
+                signupInterface.onSignupFailure(ServioException("Failed Signup"))
             }
         })
     }

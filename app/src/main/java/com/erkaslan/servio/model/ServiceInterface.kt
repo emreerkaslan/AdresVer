@@ -10,14 +10,23 @@ interface AllServicesInterface {
     fun onAllServicesTaken(listOfServices: List<Service>)
 }
 
+interface AllEventsInterface {
+    fun onAllEventsTaken(listOfEvents: List<Event>)
+}
+
 interface LoginInterface {
     fun onLogin(token: Token)
-    fun onFailure(error: Error)
+    fun onFailure(servioException: ServioException)
+}
+
+interface LoginCheckInterface {
+    fun onLoginCheck(user: User)
+    fun onLoginFailure(servioException: ServioException)
 }
 
 interface SignupInterface {
     fun onSignup(user: User)
-    fun onSignupFailure(error: Error)
+    fun onSignupFailure(servioException: ServioException)
 }
 
 interface CreateServiceInterface {

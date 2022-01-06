@@ -1,5 +1,7 @@
 package com.erkaslan.servio.model
 
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 import java.util.*
@@ -15,9 +17,9 @@ interface UserService {
 
     @GET("user/{username}/")
     fun loginCheck(@Header("Authorization") token: String, @Path("username") username: String): Call<User>
-
+    
     @POST("user/create/")
-    fun signup(@Body data: HashMap<String, String>): Call<User>
+    fun signup(@Body data: JSONObject): Call<User>
 
     @GET("service/{id}")
     fun getService(@Path("id") id: Int): Call<Service>

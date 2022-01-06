@@ -3,7 +3,7 @@ package com.erkaslan.servio.ui.search
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.erkaslan.servio.databinding.RowServiceBinding
+import com.erkaslan.servio.databinding.RowServiceItemBinding
 import com.erkaslan.servio.model.Service
 
 class SearchAdapter(var list: List<Any>) : RecyclerView.Adapter<SearchViewHolder>() {
@@ -31,14 +31,14 @@ sealed class HomeRowItem(val type: Int){
     //data class User() : HomeRowItem(HomeAdapter.TYPE_USER)
 }
 
-class SearchViewHolder(val binding: RowServiceBinding) : RecyclerView.ViewHolder(binding.root) {
+class SearchViewHolder(val binding: RowServiceItemBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object{
         fun create(inflater: LayoutInflater, parent: ViewGroup): SearchViewHolder{
-            return SearchViewHolder(RowServiceBinding.inflate(inflater, parent, false))
+            return SearchViewHolder(RowServiceItemBinding.inflate(inflater, parent, false))
         }
     }
 
     fun bind(service: Service){
-        binding.tvTitle.text = service.title
+        //binding.tvTitle.text = service.title
     }
 }

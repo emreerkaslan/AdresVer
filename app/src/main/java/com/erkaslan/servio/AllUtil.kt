@@ -11,8 +11,8 @@ import kotlin.collections.HashMap
 
 class AllUtil () {
 
-    fun glide(context: Context?, uri: Uri?, imageView: ImageView?) {
-        Glide.with(context!!)
+    fun glide(context: Context, uri: Uri?, imageView: ImageView?) {
+        Glide.with(context)
             .asBitmap()
             .load(uri)
             .override(500)
@@ -22,8 +22,8 @@ class AllUtil () {
             .into(imageView!!)
     }
 
-    fun glideCircle(context: Context?, uri: Uri?, imageView: ImageView?) {
-        Glide.with(context!!)
+    fun glideCircle(context: Context, uri: Uri?, imageView: ImageView?) {
+        Glide.with(context)
             .asBitmap()
             .load(uri)
             .circleCrop()

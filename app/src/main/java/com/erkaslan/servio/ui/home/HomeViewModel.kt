@@ -25,11 +25,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val serviceMutableLiveData: MutableLiveData<Service>?
         get() = _serviceMutableLiveData
 
-    private var _allServicesMutableLiveData: MutableLiveData<List<Service>?> = MutableLiveData()
+    private var _allServicesMutableLiveData: MutableLiveData<GenericResult<List<Service>?>> = MutableLiveData()
 
-    val allServicesMutableLiveData: MutableLiveData<List<Service>?>
+    val allServicesMutableLiveData: MutableLiveData<GenericResult<List<Service>?>>
         get() = _allServicesMutableLiveData
 
+    private var _allEventsMutableLiveData: MutableLiveData<GenericResult<List<Event>?>> = MutableLiveData()
+
+    val allEventsMutableLiveData: MutableLiveData<GenericResult<List<Event>?>>
+        get() = _allEventsMutableLiveData
+    
     fun getService(id: Int){
         repository.getService(id, object : ServiceInterface {
             override fun onSuccess(service: Service) {
@@ -41,7 +46,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllServices(){
         repository.getAllServices(object : AllServicesInterface {
             override fun onAllServicesTaken(listOfServices: List<Service>) {
-                allServicesMutableLiveData?.value = listOfServices
+                allServicesMutableLiveData?.value = GenericResult.Success(listOfServices)
+            }
+        })
+    }
+
+    fun getAllEvents(){
+        repository.getAllEvents(object : AllEventsInterface {
+            override fun onAllEventsTaken(listOfEvents: List<Event>) {
+                allEventsMutableLiveData?.value = GenericResult.Success(listOfEvents)
             }
         })
     }

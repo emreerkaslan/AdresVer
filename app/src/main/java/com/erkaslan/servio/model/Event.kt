@@ -31,7 +31,7 @@ data class Event(
     var address: String,
     @SerializedName("hasQuota")
     @Expose
-    var recurring: Boolean,
+    var hasQuota: Boolean,
     @SerializedName("quota")
     @Expose
     var quota: Int,

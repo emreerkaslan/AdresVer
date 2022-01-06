@@ -3,42 +3,84 @@ package com.erkaslan.servio.ui.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.erkaslan.servio.databinding.RowServiceBinding
+import com.erkaslan.servio.databinding.RowLayoutEventListBinding
+import com.erkaslan.servio.databinding.RowLayoutServiceListBinding
+import com.erkaslan.servio.model.Event
 import com.erkaslan.servio.model.Service
+import java.lang.Exception
 
-class HomeAdapter(var serviceList: List<Service>) : RecyclerView.Adapter<HomeViewHolder>() {
-
-    lateinit var layoutInflater: LayoutInflater
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
-        if(!::layoutInflater.isInitialized){
-            layoutInflater = LayoutInflater.from(parent.context)
-        }
-        return HomeViewHolder.create(layoutInflater, parent)
+class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    companion object{
+        const val TYPE_SERVICES_AROUND = 0
+        const val TYPE_EVENTS_AROUND = 1
     }
 
-    override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
-        val service = serviceList[position]
-        holder.bind(service)
+    lateinit var layoutInflater: LayoutInflater
+
+    val homeRowList: MutableList<HomeRowItem> = mutableListOf()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if(!::layoutInflater.isInitialized){ layoutInflater = LayoutInflater.from(parent.context) }
+        return when(viewType){
+            TYPE_SERVICES_AROUND -> {
+                ServiceViewHolder.create(layoutInflater, parent)
+            }
+            TYPE_EVENTS_AROUND -> {
+                EventViewHolder.create(layoutInflater, parent)
+            }
+            else -> {
+                throw Exception("View type not expected")
+            }
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = homeRowList[position]
+        when(holder) {
+            is ServiceViewHolder -> {
+                (item as HomeRowItem.ServicesAround).let {
+                    holder.bind(it)
+                }
+            }
+            is EventViewHolder -> {
+                (item as HomeRowItem.EventsAround).let {
+                    holder.bind(it)
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-        return serviceList.size
+        return homeRowList.size
     }
 
 }
 
-sealed class HomeRowItem(val type: Int){
-    //data class User() : HomeRowItem(HomeAdapter.TYPE_USER)
-}
-
-class HomeViewHolder(val binding: RowServiceBinding) : RecyclerView.ViewHolder(binding.root) {
+class ServiceViewHolder(val binding: RowLayoutServiceListBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object{
-        fun create(inflater: LayoutInflater, parent: ViewGroup): HomeViewHolder{
-            return HomeViewHolder(RowServiceBinding.inflate(inflater, parent, false))
+        fun create(inflater: LayoutInflater, parent: ViewGroup): ServiceViewHolder{
+            return ServiceViewHolder(RowLayoutServiceListBinding.inflate(inflater, parent, false))
         }
     }
 
-    fun bind(service: Service){
-        binding.tvTitle.text = service.title
+    fun bind(serviceList: HomeRowItem.ServicesAround){
+        binding.rvServiceList.adapter = ServiceListAdapter(serviceList.services)
     }
+}
+
+class EventViewHolder(val binding: RowLayoutEventListBinding) : RecyclerView.ViewHolder(binding.root) {
+    companion object{
+        fun create(inflater: LayoutInflater, parent: ViewGroup): EventViewHolder{
+            return EventViewHolder(RowLayoutEventListBinding.inflate(inflater, parent, false))
+        }
+    }
+
+    fun bind(eventList: HomeRowItem.EventsAround){
+        binding.rvEventList.adapter = EventListAdapter(eventList.events)
+    }
+}
+
+sealed class HomeRowItem(val type: Int){
+    data class ServicesAround(var services: List<Service>) : HomeRowItem(HomeAdapter.TYPE_SERVICES_AROUND)
+    data class EventsAround(var events: List<Event>) : HomeRowItem(HomeAdapter.TYPE_EVENTS_AROUND)
 }

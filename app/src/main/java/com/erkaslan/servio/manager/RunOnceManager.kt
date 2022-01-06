@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import com.erkaslan.servio.model.RetrofitClient
-import com.erkaslan.servio.model.Token
 import com.erkaslan.servio.model.UserService
 import com.erkaslan.servio.model.User
 import retrofit2.Call
@@ -21,7 +20,6 @@ class RunOnceManager () {
     fun runOnce(context: Context){
         val service = RetrofitClient.getClient().create(UserService::class.java)
         val sharedPreferences: SharedPreferences.Editor? = context.getSharedPreferences("app", Context.MODE_PRIVATE)?.edit()
-
         authenticate(context, sharedPreferences, service)
 
     }
@@ -37,7 +35,6 @@ class RunOnceManager () {
             Log.d("EX", token)
             Log.d("EX", username)
             val check = service.loginCheck("Token " + token, username)
-
             check.enqueue(object : Callback<User> {
                 override fun onResponse(call: Call<User>, response: Response<User>) {
                     Log.d("EX", response.body().toString())
