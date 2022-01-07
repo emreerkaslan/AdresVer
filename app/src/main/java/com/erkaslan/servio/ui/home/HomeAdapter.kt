@@ -9,7 +9,7 @@ import com.erkaslan.servio.model.Event
 import com.erkaslan.servio.model.Service
 import java.lang.Exception
 
-class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HomeAdapter(val listener: HomeActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object{
         const val TYPE_SERVICES_AROUND = 0
         const val TYPE_EVENTS_AROUND = 1
@@ -39,12 +39,12 @@ class HomeAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when(holder) {
             is ServiceViewHolder -> {
                 (item as HomeRowItem.ServicesAround).let {
-                    holder.bind(it)
+                    holder.bind(it, listener)
                 }
             }
             is EventViewHolder -> {
                 (item as HomeRowItem.EventsAround).let {
-                    holder.bind(it)
+                    holder.bind(it, listener)
                 }
             }
         }
@@ -67,8 +67,8 @@ class ServiceViewHolder(val binding: RowLayoutServiceListBinding) : RecyclerView
         }
     }
 
-    fun bind(serviceList: HomeRowItem.ServicesAround){
-        binding.rvServiceList.adapter = ServiceListAdapter(serviceList.services)
+    fun bind(serviceList: HomeRowItem.ServicesAround, listener: HomeActionListener){
+        binding.rvServiceList.adapter = ServiceListAdapter(serviceList.services, listener)
     }
 }
 
@@ -79,8 +79,8 @@ class EventViewHolder(val binding: RowLayoutEventListBinding) : RecyclerView.Vie
         }
     }
 
-    fun bind(eventList: HomeRowItem.EventsAround){
-        binding.rvEventList.adapter = EventListAdapter(eventList.events)
+    fun bind(eventList: HomeRowItem.EventsAround, listener: HomeActionListener){
+        binding.rvEventList.adapter = EventListAdapter(eventList.events, listener)
     }
 }
 

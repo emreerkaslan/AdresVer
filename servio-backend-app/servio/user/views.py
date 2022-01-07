@@ -9,13 +9,6 @@ from .models import User
 from .serializers import UserSerializer
 
 
-class UserCreate(generics.CreateAPIView):
-    # API endpoint that allows creation of a new user
-    # permission_classes = (IsAuthenticated,)
-    queryset = User.objects.all(),
-    serializer_class = UserSerializer
-
-
 class UserList(generics.ListAPIView):
     # API endpoint that allows user to be viewed.
     # permission_classes = (IsAuthenticated,)
@@ -100,16 +93,17 @@ def getFeedback(request, pk):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def getService(request, pk):
+    print(pk)
     try:
-        user = User.objects.get(pk=pk)
+        user = User.objects.filter(pk=pk)
     except User.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
-        service = user.service
         from servio.service.serializers import ServiceSerializer
-        serializer = ServiceSerializer(service)
+        from servio.service.models import Service
+        services = Service.objects.filter(giver=user)
+        serializer = ServiceSerializer(services)
         return JsonResponse(serializer.data)
     else:
         serializer = UserSerializer(user)
@@ -185,3 +179,18 @@ def userCreate(request):
     user.save()
     serializer = UserSerializer(user)
     return JsonResponse(serializer.data, status=201)
+
+@api_view(['GET'])
+def getUsers(request):
+    request.data
+    if request.method == 'GET':
+        users = list
+        for pk in request.data:
+            if User.objects.filter(pk=pk).exists():
+                user = User.objects.get(pk=pk)
+                users.append(user)
+        serializer = UserSerializer(users)
+        return JsonResponse(serializer.data)
+    else:
+        serializer = UserSerializer()
+        return JsonResponse(serializer.errors, status=400)

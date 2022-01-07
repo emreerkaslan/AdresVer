@@ -14,9 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.content.SharedPreferences
 import android.content.Context.MODE_PRIVATE
 import android.net.Uri
+import androidx.fragment.app.commit
 import com.erkaslan.servio.AllUtil
 import com.erkaslan.servio.MainActivity
 import com.erkaslan.servio.R
+import com.erkaslan.servio.ui.home.MyServicesFragment
+import com.erkaslan.servio.ui.home.ServiceDetailFragment
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import org.json.JSONObject
@@ -105,6 +108,14 @@ class ProfileFragment : Fragment() {
                     Toast.makeText(context, "Logged out successfully", Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
                     Toast.makeText(context, "Now is not a good time. May be logout later?", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            binding.btnServices.setOnClickListener {
+                val id = this.id
+                fragmentManager?.commit {
+                    detach(this@ProfileFragment)
+                    replace(id, MyServicesFragment())
                 }
             }
         }

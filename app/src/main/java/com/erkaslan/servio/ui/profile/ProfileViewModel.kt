@@ -2,13 +2,9 @@ package com.erkaslan.servio.ui.profile
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.erkaslan.servio.manager.RunOnceManager
 import com.erkaslan.servio.model.*
 import org.json.JSONObject
-import java.lang.Error
-import java.util.*
 import kotlin.collections.HashMap
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {

@@ -10,7 +10,10 @@ import kotlin.collections.HashMap
 interface UserService {
 
     @GET("user/{id}")
-    fun getUsers(@Path("id") id: Int): Call<User>
+    fun getUser(@Path("id") id: Int): Call<User>
+
+    @GET("user/set/")
+    fun getUsers(@Body data: JSONObject): Call<List<User>>
 
     @POST("user/login/")
     fun userLogin(@Body credentials: HashMap<String, String>): Call<Token>
@@ -20,6 +23,9 @@ interface UserService {
     
     @POST("user/create/")
     fun signup(@Body data: JSONObject): Call<User>
+
+    @GET("service/{id}/set/")
+    fun getServices(@Path("id") id: Int): Call<List<Service>>
 
     @GET("service/{id}")
     fun getService(@Path("id") id: Int): Call<Service>
@@ -36,6 +42,6 @@ interface UserService {
     @GET("event/")
     fun getAllEvents(): Call<List<Event>>
 
-    @POST("Event/event/")
+    @POST("event/create/")
     fun createEvent(@Body data: HashMap<String, String>): Call<Event>
 }

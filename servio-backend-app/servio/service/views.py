@@ -1,7 +1,8 @@
 from django.http import HttpResponse, JsonResponse
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .models import Service
 from .serializers import ServiceSerializer
@@ -74,3 +75,51 @@ def removeRequest(request, service, requestmaker):
     else:
         serializer = ServiceSerializer(service)
         return JsonResponse(serializer.errors, status=400)
+
+@api_view(['POST'])
+def serviceCreate(request):
+    data = request.data
+    print(data)
+    try:
+        title = data.get("title")
+        description = data.get("description")
+        credits = int(data.get("credits"))
+        giver = int(data.get("giver"))
+        date = data.get("date")
+        print(date)
+        geolocation = data.get("geolocation")
+        print(geolocation)
+        recurring = bool(data.get("recurring"))
+        print(recurring)
+        from servio.user.models import User
+        queryset = User.objects
+        giver = queryset.get(giver)
+        print(giver)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    service = Service(
+            title=title,
+            description=description,
+            credits=credits,
+            giver=giver,
+            date=date,
+            geolocation=geolocation,
+            recurring=recurring
+        )
+    if 'picture' in request.data:
+        service.picture = data.get('picture')
+    if 'tags' in request.data:
+        service.tags = data.get('tags')
+    service.save()
+    serializer = ServiceSerializer(service)
+    return JsonResponse(serializer.data, status=201)
+
+@api_view(['GET'])
+def getService(request, pk):
+    print(pk)
+    if request.method == 'GET':
+        services = Service.objects.filter(giver=pk)
+        serializer = ServiceSerializer(services)
+        return JsonResponse(serializer.data)
+    else:
+        return JsonResponse(TypeError, status=400)

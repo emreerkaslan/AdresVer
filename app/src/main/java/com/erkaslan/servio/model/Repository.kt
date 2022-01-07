@@ -1,24 +1,16 @@
 package com.erkaslan.servio.model
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
 import com.erkaslan.servio.model.RetrofitClient.getClient
-import com.google.gson.Gson
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Error
-import java.util.*
 import kotlin.collections.HashMap
 
 class Repository(private val application: Application) : ServiceInterface, AllServicesInterface, LoginInterface {
     lateinit var userService: UserService
-    lateinit var userSingle: MutableLiveData<User>
 
     override fun onSuccess(service: Service) {}
     override fun onAllServicesTaken(listOfServices: List<Service>) {}
@@ -33,6 +25,27 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
         service.enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
                 Log.d("REPO", response.body().toString())
+                if (response.isSuccessful) {
+                    serviceInterface.onAllServicesTaken(response.body() as List<Service>)
+                } else if (response.code() == 400) {
+                    Log.v("VER",response.errorBody().toString());
+                }
+                else{
+                }
+            }
+
+            override fun onFailure(call: Call<List<Service>>, t: Throwable) {
+            }
+        })
+    }
+
+    //Gets services belonging to a user pk
+    fun getUserServices(id: Int, serviceInterface: AllServicesInterface){
+        userService = getClient().create(UserService::class.java)
+        var service = userService.getServices(id)
+
+        service.enqueue(object : Callback<List<Service>> {
+            override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
                 if (response.isSuccessful) {
                     serviceInterface.onAllServicesTaken(response.body() as List<Service>)
                 } else if (response.code() == 400) {
@@ -127,6 +140,52 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
             override fun onFailure(call: Call<User>, t: Throwable) {
                 loginCheckInterface.onLoginFailure(ServioException("Failed Login"))
+            }
+        })
+    }
+
+    //Gets a single user by pk
+    fun getUser(id: Int, userInterface: UserInterface){
+        userService = getClient().create(UserService::class.java)
+        var users = userService.getUser(id)
+
+        users.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    userInterface.onUserResponse(response.body() as User)
+                } else if (response.code() == 400) {
+                    userInterface.onUserFailure(ServioException("User fetch failed"))
+                }
+                else{
+                    userInterface.onUserFailure(ServioException("User fetch failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                userInterface.onUserFailure(ServioException("User fetch failed"))
+            }
+        })
+    }
+
+    //Gets a set of users by pk list
+    fun getUsers(data: JSONObject, userListInterface: UserListInterface){
+        userService = getClient().create(UserService::class.java)
+        var users = userService.getUsers(data)
+
+        users.enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (response.isSuccessful) {
+                    userListInterface.onUserListResponse(response.body() as List<User>)
+                } else if (response.code() == 400) {
+                    userListInterface.onUserListFailure(ServioException("User list fetch failed"))
+                }
+                else{
+                    userListInterface.onUserListFailure(ServioException("User list fetch failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                userListInterface.onUserListFailure(ServioException("User list fetch failed"))
             }
         })
     }

@@ -7,22 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.databinding.FragmentHomeBinding
 import com.erkaslan.servio.manager.RunOnceManager
-import com.erkaslan.servio.model.GenericResult
-import com.erkaslan.servio.model.RetrofitClient
-import com.erkaslan.servio.model.User
-import com.erkaslan.servio.model.UserService
+import com.erkaslan.servio.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.R
+import androidx.fragment.app.commit
+import com.erkaslan.servio.databinding.FragmentServiceDetailBinding
+
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), HomeActionListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -39,7 +42,7 @@ class HomeFragment : Fragment() {
     }
 
     fun initViews(){
-        binding.rvHomepage.adapter = HomeAdapter()
+        binding.rvHomepage.adapter = HomeAdapter(this)
         homeViewModel.getAllServices()
         homeViewModel.getAllEvents()
 
@@ -100,31 +103,6 @@ class HomeFragment : Fragment() {
         })
     }
 
-    fun getUser(){
-        userService = RetrofitClient.getClient().create(UserService::class.java)
-        var users = userService.getUsers(5)
-
-        users.enqueue(object : Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                Log.d("EX", response.body().toString())
-                if (response.isSuccessful) {
-                    userSingle = response.body() as MutableLiveData<User>
-                    binding.textHome.text = userSingle.toString()
-                    Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
-                } else if (response.code() == 400) {
-                    Log.v("VER",response.errorBody().toString());
-                }
-                else{
-                    Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show()
-            }
-        })
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -134,4 +112,26 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onServiceClicked(service: Service) {
+        val id = this.id
+        fragmentManager?.commit {
+            detach(this@HomeFragment)
+            replace(id, ServiceDetailFragment(service))
+        }
+    }
+
+    override fun onEventClicked(event: Event) {
+        val id = this.id
+        fragmentManager?.commit {
+            detach(this@HomeFragment)
+            replace(id, EventDetailFragment(event))
+        }
+    }
+
+}
+
+interface HomeActionListener {
+    fun onServiceClicked(service: Service)
+    fun onEventClicked(event: Event)
 }

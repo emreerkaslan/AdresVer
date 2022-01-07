@@ -1,6 +1,5 @@
 package com.erkaslan.servio.model
 
-import java.lang.Error
 
 interface ServiceInterface {
     fun onSuccess(service: Service)
@@ -27,6 +26,16 @@ interface LoginCheckInterface {
 interface SignupInterface {
     fun onSignup(user: User)
     fun onSignupFailure(servioException: ServioException)
+}
+
+interface UserListInterface {
+    fun onUserListResponse(userList: List<User>)
+    fun onUserListFailure(servioException: ServioException)
+}
+
+interface UserInterface {
+    fun onUserResponse(user: User)
+    fun onUserFailure(servioException: ServioException)
 }
 
 interface CreateServiceInterface {

@@ -9,7 +9,7 @@ import com.erkaslan.servio.AllUtil
 import com.erkaslan.servio.databinding.RowEventItemBinding
 import com.erkaslan.servio.model.Event
 
-class EventListAdapter (var eventList: List<Event>): RecyclerView.Adapter<EventItemViewHolder>() {
+class EventListAdapter (var eventList: List<Event>, val listener: HomeActionListener): RecyclerView.Adapter<EventItemViewHolder>() {
 
     private lateinit var layoutInflater: LayoutInflater
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventItemViewHolder {
@@ -22,7 +22,7 @@ class EventListAdapter (var eventList: List<Event>): RecyclerView.Adapter<EventI
     }
 
     override fun onBindViewHolder(holder: EventItemViewHolder, position: Int) {
-        holder.bind(eventList[position])
+        holder.bind(eventList[position], listener)
     }
 }
 
@@ -34,11 +34,14 @@ class EventItemViewHolder(var binding: RowEventItemBinding): RecyclerView.ViewHo
         }
     }
 
-    fun bind(event: Event) {
+    fun bind(event: Event, listener: HomeActionListener) {
         binding.event = event
         util.glide(binding.ivEvent.context, Uri.parse(event.picture), binding.ivEvent)
         if(event.hasQuota){
             binding.quota = event.quota.toString()
+        }
+        binding.containerEventItem.setOnClickListener {
+            listener.onEventClicked(event)
         }
     }
 }
