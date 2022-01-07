@@ -222,18 +222,18 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_badge"
                     android:text="My Services"/>
                 <Button
-                    android:id="@+id/btn_feedbacks"
+                    android:id="@+id/btn_events"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:layout_constraintTop_toBottomOf="@id/btn_services"
-                    android:text="My Feedbacks"/>
+                    android:text="My Events"/>
                 <TextView
                     android:id="@+id/tv_logout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/btn_feedbacks"
+                    app:layout_constraintTop_toBottomOf="@id/btn_events"
                     android:text="Logout"
                     android:textAlignment="center"
                     android:textStyle="bold"/>

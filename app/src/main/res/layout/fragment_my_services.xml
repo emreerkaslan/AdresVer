@@ -26,7 +26,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_my_service_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="15dp">
 
         <TextView
             android:id="@+id/tv_my_service_list"

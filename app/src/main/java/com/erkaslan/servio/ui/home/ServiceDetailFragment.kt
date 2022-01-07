@@ -20,7 +20,7 @@ import org.json.JSONObject
 
 
 @AndroidEntryPoint
-class ServiceDetailFragment (var service: Service) : Fragment() {
+class ServiceDetailFragment (var service: Service) : Fragment(), ServiceActionListener {
     private var _binding: FragmentServiceDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var detailViewModel: DetailViewModel
@@ -36,22 +36,21 @@ class ServiceDetailFragment (var service: Service) : Fragment() {
     fun initViews(){
         binding.service = service
         util.glide(requireContext(), Uri.parse(service.picture), binding.ivServiceDetail)
-        binding.recurring = if(service.recurring) "Yes" else "No"
+        binding.recurring = if(service.recurring == true) "Yes" else "No"
         if(service.giver == (activity as MainActivity).currentUser?.pk) {
             binding.isCurrentUser = true
             binding.giver = (activity as MainActivity).currentUser
-        } else {
-            binding.isCurrentUser = false
-            detailViewModel.getProvider(service.giver)
-            Log.d("REQS", service.requests.toString())
-
-            /*
-            val map = HashMap<String, List<User>>()
-            map.put("attendees", service.requests)
+            val map = HashMap<String, List<Int>?>()
+            map.put("data", service.requests)
             val gson = Gson()
             val json = JSONObject(gson.toJson(map))
             detailViewModel.getRequesters(json)
-             */
+        } else {
+            binding.isCurrentUser = false
+            detailViewModel.getProvider(service.giver)
+            binding.btnSendRequest.setOnClickListener {
+                (activity as MainActivity).currentUser?.pk?.let { self -> detailViewModel.addRequest(service.pk, self) }
+            }
         }
     }
 
@@ -69,7 +68,37 @@ class ServiceDetailFragment (var service: Service) : Fragment() {
         detailViewModel.requestersMutableLiveData?.observe(viewLifecycleOwner, {
             when(it){
                 is GenericResult.Success -> {
-                    binding.rvServiceDetailRequests.adapter = RequestListAdapter(it.data)
+                    binding.rvServiceDetailRequests.adapter = RequestListAdapter(it.data, this)
+                }
+                is GenericResult.Failure -> { }
+                else -> {}
+            }
+        })
+
+        detailViewModel.serviceMutableLiveData?.observe(viewLifecycleOwner, {
+            when(it){
+                is GenericResult.Success -> {
+                    service = it.data
+                    val map = HashMap<String, List<Int>?>()
+                    map.put("data", service.requests)
+                    val gson = Gson()
+                    val json = JSONObject(gson.toJson(map))
+                    detailViewModel.getRequesters(json)
+                }
+                is GenericResult.Failure -> { }
+                else -> {}
+            }
+        })
+
+        detailViewModel.requestedServiceMutableLiveData?.observe(viewLifecycleOwner, {
+            when(it){
+                is GenericResult.Success -> {
+                    val user = (activity as MainActivity).currentUser
+                    if(user!=null){
+                        user.credits = user.credits - service.credits
+                    }
+                    (activity as MainActivity).currentUser = user
+                    binding.tvServiceDetailOthers.visibility = View.VISIBLE
                 }
                 is GenericResult.Failure -> { }
                 else -> {}
@@ -86,4 +115,17 @@ class ServiceDetailFragment (var service: Service) : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onAcceptRequest(user: User) {
+        detailViewModel.acceptRequest(service.pk, user.pk)
+    }
+
+    override fun onDeclineRequest(user: User) {
+        detailViewModel.declineRequest(service.pk, user.pk)
+    }
+}
+
+interface ServiceActionListener{
+    fun onAcceptRequest(user: User)
+    fun onDeclineRequest(user: User)
 }

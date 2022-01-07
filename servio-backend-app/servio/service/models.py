@@ -10,11 +10,11 @@ class Service(models.Model):
 
     giver = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='giver')
 
-    taker = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='taker', null=True, blank=True)
+    taker = models.ManyToManyField('user.User', related_name="takers", blank=True, null=True)
 
     feedbackGiven = models.BooleanField(default=False)
 
-    date = models.DateTimeField()
+    date = models.DateTimeField(null=True, blank=True)
 
     recurring = models.BooleanField(default=False)
 
@@ -30,7 +30,7 @@ class Service(models.Model):
 
     tags = ArrayField(models.CharField(verbose_name='tag', max_length=255), null=True, blank=True)
 
-    REQUIRED_FIELDS = ['title', 'description', 'giver', 'date', 'geolocation', 'credits']
+    REQUIRED_FIELDS = ['title', 'description', 'giver', 'geolocation', 'credits']
 
     def __int__(self):
         return self.pk

@@ -24,6 +24,16 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     val userServicesMutableLiveData: MutableLiveData<GenericResult<List<Service>>>?
         get() = _userServicesMutableLiveData
 
+    private var _serviceMutableLiveData: MutableLiveData<GenericResult<Service>>? = MutableLiveData()
+
+    val serviceMutableLiveData: MutableLiveData<GenericResult<Service>>?
+        get() = _serviceMutableLiveData
+
+    private var _requestedServiceMutableLiveData: MutableLiveData<GenericResult<Service>>? = MutableLiveData()
+
+    val requestedServiceMutableLiveData: MutableLiveData<GenericResult<Service>>?
+        get() = _requestedServiceMutableLiveData
+
 
     fun getProvider(pk: Int){
         repository.getUser(pk , object: UserInterface {
@@ -57,6 +67,46 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
 
         })
     }
+
+    fun acceptRequest(service:Int, user:Int) {
+        repository.acceptRequest(service, user, object: CreateServiceInterface{
+            override fun onCreateService(service: Service) {
+                serviceMutableLiveData?.value = GenericResult.Success(service)
+                GenericResult.Success(service).data.requests
+            }
+
+            override fun onCreateServiceFailure(servioException: ServioException) {
+                serviceMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun declineRequest(service:Int, user:Int) {
+        repository.declineRequest(service, user, object: CreateServiceInterface{
+            override fun onCreateService(service: Service) {
+                serviceMutableLiveData?.value = GenericResult.Success(service)
+                GenericResult.Success(service).data.requests
+            }
+
+            override fun onCreateServiceFailure(servioException: ServioException) {
+                serviceMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun addRequest(service:Int, user:Int) {
+        repository.addRequest(service, user, object: CreateServiceInterface{
+            override fun onCreateService(service: Service) {
+                requestedServiceMutableLiveData?.value = GenericResult.Success(service)
+                GenericResult.Success(service).data.requests
+            }
+
+            override fun onCreateServiceFailure(servioException: ServioException) {
+                requestedServiceMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
 
     companion object {
         private const val TAG = "HomeVM"

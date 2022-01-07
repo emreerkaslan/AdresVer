@@ -12,7 +12,7 @@ interface UserService {
     @GET("user/{id}")
     fun getUser(@Path("id") id: Int): Call<User>
 
-    @GET("user/set/")
+    @POST("user/set/")
     fun getUsers(@Body data: JSONObject): Call<List<User>>
 
     @POST("user/login/")
@@ -34,7 +34,16 @@ interface UserService {
     fun getAllServices(): Call<List<Service>>
 
     @POST("service/create/")
-    fun createService(@Body service: Service): Call<Service>
+    fun createService(@Body service: JsonObject): Call<Service>
+
+    @POST("service/accept/{service}/{user}/")
+    fun acceptRequest(@Path("service") service: Int, @Path("user") user: Int): Call<Service>
+
+    @POST("service/decline/{service}/{user}/")
+    fun declineRequest(@Path("service") service: Int, @Path("user") user: Int): Call<Service>
+
+    @POST("service/request/{service}/{user}/")
+    fun addRequest(@Path("service") service: Int, @Path("user") user: Int): Call<Service>
 
     @GET("event/{id}")
     fun getEvent(@Path("id") id: Int): Call<Event>
@@ -43,5 +52,5 @@ interface UserService {
     fun getAllEvents(): Call<List<Event>>
 
     @POST("event/create/")
-    fun createEvent(@Body data: HashMap<String, String>): Call<Event>
+    fun createEvent(@Body event: JsonObject): Call<Event>
 }

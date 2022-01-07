@@ -16,7 +16,7 @@ data class Service(
     var description: String = "",
     @SerializedName("date")
     @Expose
-    var date: Date,
+    var date: Date? = null,
     @SerializedName("geolocation")
     @Expose
     var geolocation: String = "",
@@ -28,20 +28,20 @@ data class Service(
     var giver: Int,
     @SerializedName("taker")
     @Expose
-    var taker: Int? = null,
+    var taker: List<Int>? = null,
     @SerializedName("feedbackGiven")
     @Expose
     var feedbackGiven: Boolean = false,
     @SerializedName("recurring")
     @Expose
-    var recurring: Boolean,
+    var recurring: Boolean?  = null,
     @SerializedName("credits")
     @Expose
     var credits: Int,
     @SerializedName("requests")
     @Expose
-    var requests: List<User>? = null,
+    var requests: List<Int>? = null,
     @SerializedName("tags")
     @Expose
-    var tags: List<String>
+    var tags: List<String>? = null
 )

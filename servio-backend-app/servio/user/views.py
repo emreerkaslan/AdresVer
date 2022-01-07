@@ -180,17 +180,17 @@ def userCreate(request):
     serializer = UserSerializer(user)
     return JsonResponse(serializer.data, status=201)
 
-@api_view(['GET'])
+@api_view(['POST'])
 def getUsers(request):
-    request.data
-    if request.method == 'GET':
-        users = list
-        for pk in request.data:
-            if User.objects.filter(pk=pk).exists():
-                user = User.objects.get(pk=pk)
-                users.append(user)
-        serializer = UserSerializer(users)
-        return JsonResponse(serializer.data)
+    data = request.data["nameValuePairs"]['data']['values']
+    print(data)
+    if request.method == 'POST':
+        list = (pk for pk in data)
+        print(list)
+        users = User.objects.filter(pk__in = list)
+        print(users)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
     else:
         serializer = UserSerializer()
         return JsonResponse(serializer.errors, status=400)

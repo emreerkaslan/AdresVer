@@ -3,6 +3,7 @@ package com.erkaslan.servio.model
 import android.app.Application
 import android.util.Log
 import com.erkaslan.servio.model.RetrofitClient.getClient
+import com.google.gson.JsonObject
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,6 +47,7 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
         service.enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
+                Log.d("SERV", response.body().toString())
                 if (response.isSuccessful) {
                     serviceInterface.onAllServicesTaken(response.body() as List<Service>)
                 } else if (response.code() == 400) {
@@ -210,7 +212,7 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Creates service
-    fun createService(service: Service, createServiceInterface: CreateServiceInterface){
+    fun createService(service: JsonObject, createServiceInterface: CreateServiceInterface){
         var service = getClient().create(UserService::class.java).createService(service)
         service.enqueue(object : Callback<Service> {
             override fun onResponse(call: Call<Service>, response: Response<Service>) {
@@ -227,8 +229,64 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
         })
     }
 
+    //Accepts request
+    fun acceptRequest(service: Int, user: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).acceptRequest(service, user)
+        Log.d("ACCEPT", service.toString() +" "+user.toString() )
+        service.enqueue(object : Callback<Service> {
+            override fun onResponse(call: Call<Service>, response: Response<Service>) {
+                Log.d("ACCEPT", response.toString())
+                if (response.isSuccessful) {
+                    createServiceInterface.onCreateService(response.body() as Service)
+                } else {
+                    createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Acceptance"))
+                }
+            }
+
+            override fun onFailure(call: Call<Service>, t: Throwable) {
+                createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Acceptance"))
+            }
+        })
+    }
+
+    //Declines request
+    fun declineRequest(service: Int, user: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).declineRequest(service, user)
+        service.enqueue(object : Callback<Service> {
+            override fun onResponse(call: Call<Service>, response: Response<Service>) {
+                if (response.isSuccessful) {
+                    createServiceInterface.onCreateService(response.body() as Service)
+                } else {
+                    createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Decline"))
+                }
+            }
+
+            override fun onFailure(call: Call<Service>, t: Throwable) {
+                createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Decline"))
+            }
+        })
+    }
+
+    //Adds request
+    fun addRequest(service: Int, user: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).addRequest(service, user)
+        service.enqueue(object : Callback<Service> {
+            override fun onResponse(call: Call<Service>, response: Response<Service>) {
+                if (response.isSuccessful) {
+                    createServiceInterface.onCreateService(response.body() as Service)
+                } else {
+                    createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Add"))
+                }
+            }
+
+            override fun onFailure(call: Call<Service>, t: Throwable) {
+                createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Add"))
+            }
+        })
+    }
+
     //Creates event
-    fun createEvent(map: HashMap<String, String>, createEventInterface: CreateEventInterface){
+    fun createEvent(map: JsonObject, createEventInterface: CreateEventInterface){
         var event = getClient().create(UserService::class.java).createEvent(map)
         event.enqueue(object : Callback<Event> {
             override fun onResponse(call: Call<Event>, response: Response<Event>) {

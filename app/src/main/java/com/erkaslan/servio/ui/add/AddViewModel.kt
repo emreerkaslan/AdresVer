@@ -4,7 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.erkaslan.servio.model.*
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import java.lang.Error
+import java.nio.channels.SeekableByteChannel
 
 class AddViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: Repository
@@ -20,7 +23,7 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         get() = _eventCreatedLiveData
 
 
-    fun createService(service: Service){
+    fun createService(service: JsonObject){
         repository.createService(service, object: CreateServiceInterface {
             override fun onCreateService(service: Service) {
                 serviceCreatedMutableLiveData.value = GenericResult.Success(service)
@@ -32,8 +35,8 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    fun createEvent(map: HashMap<String, String>){
-        repository.createEvent(map, object: CreateEventInterface {
+    fun createEvent(event: JsonObject){
+        repository.createEvent(event, object: CreateEventInterface {
             override fun onCreateEvent(event: Event) {
                 eventCreatedMutableLiveData.value = GenericResult.Success(event)
             }

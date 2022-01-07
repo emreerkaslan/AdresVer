@@ -20,16 +20,20 @@
             android:textSize="15sp"
             android:textStyle="bold" />
         <Button
+            android:id="@+id/btn_accept_request"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.35"
             android:text="Accept"
             android:background="@color/blue"/>
         <Button
+            android:id="@+id/btn_decline_request"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.35"
             android:text="Decline"
+            android:textColor="@color/blue"
+            android:theme="@style/Platform.MaterialComponents.Light"
             android:background="@color/orange"/>
     </LinearLayout>
 </layout>

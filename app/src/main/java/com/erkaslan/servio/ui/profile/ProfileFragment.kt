@@ -155,6 +155,7 @@ class ProfileFragment : Fragment() {
                     prefs?.edit()?.putString("username", it.data.username)?.commit()
                     binding.currentUser = it.data
                     (activity as MainActivity).currentUser = it.data
+                    initViews()
                     Log.d("EX", "currentUser: " + it.data.toString())
                 }
                 is GenericResult.Failure -> {

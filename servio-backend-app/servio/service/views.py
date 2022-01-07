@@ -38,44 +38,6 @@ class ServiceDelete(generics.RetrieveDestroyAPIView):
     serializer_class = ServiceSerializer
 
 
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def addRequest(request, service, requestmaker):
-    try:
-        from servio.user.models import User
-        requestmaker = User.objects.get(pk=requestmaker)
-        service = Service.objects.get(pk=service)
-    except User.DoesNotExist:
-        return HttpResponse(status=404)
-    if request.method == 'PUT':
-        if requestmaker not in service.requests and requestmaker.credits >= service.credits:
-            service.requests.add(requestmaker)
-            requestmaker.credits = requestmaker.credits - service.credits
-        serializer = ServiceSerializer(service)
-        return JsonResponse(serializer.data)
-    else:
-        serializer = ServiceSerializer(service)
-        return JsonResponse(serializer.errors, status=400)
-
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def removeRequest(request, service, requestmaker):
-    try:
-        from servio.user.models import User
-        requestmaker = User.objects.get(pk=requestmaker)
-        service = Service.objects.get(pk=service)
-    except User.DoesNotExist:
-        return HttpResponse(status=404)
-    if request.method == 'PUT':
-        if requestmaker in service.requests:
-            service.requests.remove(requestmaker)
-            requestmaker.credits = requestmaker.credits + service.credits
-        serializer = ServiceSerializer(service)
-        return JsonResponse(serializer.data)
-    else:
-        serializer = ServiceSerializer(service)
-        return JsonResponse(serializer.errors, status=400)
-
 @api_view(['POST'])
 def serviceCreate(request):
     data = request.data
@@ -84,17 +46,15 @@ def serviceCreate(request):
         title = data.get("title")
         description = data.get("description")
         credits = int(data.get("credits"))
-        giver = int(data.get("giver"))
+        print(credits)
+        giver = data.get("giver")
+        #print(giver)
         date = data.get("date")
         print(date)
         geolocation = data.get("geolocation")
         print(geolocation)
         recurring = bool(data.get("recurring"))
         print(recurring)
-        from servio.user.models import User
-        queryset = User.objects
-        giver = queryset.get(giver)
-        print(giver)
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     service = Service(
@@ -119,7 +79,73 @@ def getService(request, pk):
     print(pk)
     if request.method == 'GET':
         services = Service.objects.filter(giver=pk)
-        serializer = ServiceSerializer(services)
-        return JsonResponse(serializer.data)
+        serializer = ServiceSerializer(services, many=True)
+        print(serializer)
+        return Response(serializer.data)
+        #return JsonResponse(serializer.data, status=200)
     else:
         return JsonResponse(TypeError, status=400)
+
+@api_view(['POST'])
+def acceptRequest(request, service, requestmaker):
+    try:
+        service = Service.objects.get(pk=service)
+    except Service.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'POST':
+        service.requests.remove(requestmaker)
+        service.taker.add(requestmaker)
+        serializer = ServiceSerializer(service)
+        return Response(serializer.data)
+    else:
+        serializer = ServiceSerializer(service)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def declineRequest(request, service, requestmaker):
+    try:
+        service = Service.objects.get(pk=service)
+    except Service.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'POST':
+        service.requests.remove(requestmaker)
+        serializer = ServiceSerializer(service)
+        return Response(serializer.data)
+    else:
+        serializer = ServiceSerializer(service)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def addRequest(request, service, requestmaker):
+    try:
+        service = Service.objects.get(pk=service)
+    except Service.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'POST':
+        service.requests.add(requestmaker)
+        serializer = ServiceSerializer(service)
+        return Response(serializer.data)
+    else:
+        serializer = ServiceSerializer(service)
+        return JsonResponse(serializer.errors, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def removeRequest(request, service, requestmaker):
+    try:
+        from servio.user.models import User
+        requestmaker = User.objects.get(pk=requestmaker)
+        service = Service.objects.get(pk=service)
+    except User.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'PUT':
+        if requestmaker in service.requests:
+            service.requests.remove(requestmaker)
+            requestmaker.credits = requestmaker.credits + service.credits
+        serializer = ServiceSerializer(service)
+        return JsonResponse(serializer.data)
+    else:
+        serializer = ServiceSerializer(service)
+        return JsonResponse(serializer.errors, status=400)

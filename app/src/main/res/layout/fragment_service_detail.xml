@@ -130,7 +130,7 @@
             android:layout_marginTop="8dp"
             android:visibility="@{isCurrentUser ? View.GONE : View.VISIBLE}">
             <Button
-                android:id="@+id/btn_service_detail_others"
+                android:id="@+id/btn_send_request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
@@ -141,10 +141,11 @@
                 android:id="@+id/tv_service_detail_others"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/btn_service_detail_others"
+                app:layout_constraintTop_toBottomOf="@id/btn_send_request"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textSize="12sp"
-                android:text="Send Feedback"
+                android:textAlignment="center"
+                android:text="Request Sent!"
                 android:textColor="@color/black"
                 android:visibility="gone"/>
             <EditText
@@ -188,6 +189,7 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:text="Requests for Service"
+                android:textAllCaps="true"
                 android:textColor="@color/black" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_service_detail_requests"
@@ -196,6 +198,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_service_detail_requests"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="vertical"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

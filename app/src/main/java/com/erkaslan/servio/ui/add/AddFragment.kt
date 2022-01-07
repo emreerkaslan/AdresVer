@@ -14,9 +14,14 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.AllUtil
+import com.erkaslan.servio.MainActivity
 import com.erkaslan.servio.databinding.FragmentAddBinding
 import com.erkaslan.servio.model.GenericResult
 import com.erkaslan.servio.model.Service
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -41,56 +46,11 @@ class AddFragment : Fragment() {
         binding.btnEventHeader.setOnClickListener{ binding.isService = false }
 
         binding.btnServiceCreate.setOnClickListener{
-            val map = HashMap<String, String>()
-            val calendar = Calendar.getInstance()
-            calendar.set(
-                binding.dpServiceCreation.year,
-                binding.dpServiceCreation.month,
-                binding.dpServiceCreation.dayOfMonth,
-                binding.tpServiceCreation.currentHour,
-                binding.tpServiceCreation.currentMinute
-            )
-            if(calendar.time < Calendar.getInstance().time){
-                Toast.makeText(context, "Picking a later date than now may be wise", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            var format = SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss.Z"), Locale.getDefault())
+            createService()
+        }
 
-            val tags = binding.etServiceCreationTags.text.toString().split(" ", ",", "#")
-
-            map.put("title", binding.etServiceCreationTitle.text.toString())
-            map.put("description", binding.etServiceCreationDescription.text.toString())
-            map.put("credits", binding.etServiceCreationCredits.text.toString())
-            if(binding.cbServiceCreationRecurring.isChecked){
-                map.put("recurring", "true")
-            }else{
-                map.put("recurring", "false")
-            }
-            map.put("date", format.format(calendar.time).toString())
-            map.put("tags", tags.toString())
-            //map.put("picture", binding.ivServiceCreation)
-            map.put("geolocation", binding.etServiceCreationGeolocation.text.toString())
-            val result = util.validateServiceCreation(map)
-            if(result.get("result").equals("false")){
-                Toast.makeText(context, result.get("message"), Toast.LENGTH_LONG)
-            } else {
-                //sharedPreferences?.getString("currentUser", "")?["pk"]
-                result.put("giver", "14")
-                result.put("date", "2018-06-14T14:30:02.982009Z")
-                val service = Service(pk = 14,
-                    title = binding.etServiceCreationTitle.text.toString(),
-                    description = binding.etServiceCreationDescription.text.toString(),
-                    credits = Integer.parseInt(binding.etServiceCreationCredits.text.toString()),
-                    recurring = false,
-                    date = calendar.time,
-                    tags = tags,
-                    geolocation = binding.etServiceCreationGeolocation.text.toString(),
-                    giver = 14
-                )
-                result.remove("result")
-                Log.d("EX", result.toString())
-                addViewModel.createService(service)
-            }
+        binding.btnEventCreate.setOnClickListener{
+            createEvent()
         }
     }
 
@@ -118,6 +78,74 @@ class AddFragment : Fragment() {
                 else -> {}
             }
         })
+    }
+    
+    private fun createService(){
+        val calendar = Calendar.getInstance()
+        var format = SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss'Z'"), Locale.getDefault())
+        calendar.set(binding.dpServiceCreation.year, binding.dpServiceCreation.month, binding.dpServiceCreation.dayOfMonth, binding.tpServiceCreation.currentHour,
+            binding.tpServiceCreation.currentMinute)
+
+        if(calendar.time < Calendar.getInstance().time){
+            Toast.makeText(context, "Picking a later date than now may be wise", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        if(binding.etServiceCreationCredits.text.toString().toIntOrNull() == null){
+            Toast.makeText(context, "Enter a numeric value less than 15 for credits", Toast.LENGTH_LONG).show()
+            return
+
+        } else if (Integer.parseInt(binding.etServiceCreationCredits.text.toString()) > 15 || Integer.parseInt(binding.etServiceCreationCredits.text.toString()) <1) {
+            Toast.makeText(context, "Enter a numeric value less than 15 for credits", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val json = JsonObject()
+        json.addProperty("title", binding.etServiceCreationTitle.text.toString())
+        json.addProperty("description", binding.etServiceCreationDescription.text.toString())
+        json.addProperty("credits", Integer.parseInt(binding.etServiceCreationCredits.text.toString()))
+        json.addProperty("date", format.format(calendar.time).toString()) //"2022-01-14T05:03:00Z"
+        json.addProperty("geolocation", binding.etServiceCreationGeolocation.text.toString())
+        json.addProperty("giver", (activity as MainActivity)?.currentUser?.pk)
+        val tags = binding.etServiceCreationTags.text.toString().split(" ", ",", "#")
+        //json.addProperty("tags", binding.etServiceCreationTags.text.toString())
+
+        if(binding.cbServiceCreationRecurring.isChecked){
+            json.addProperty("recurring", true)
+        }else{
+            json.addProperty("recurring", false)
+        }
+        //val result = util.validateServiceCreation(json)
+        addViewModel.createService(json)
+    }
+
+    private fun createEvent(){
+        val calendar = Calendar.getInstance()
+        var format = SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss'Z'"), Locale.getDefault())
+        calendar.set(binding.dpEventCreation.year, binding.dpEventCreation.month, binding.dpEventCreation.dayOfMonth, binding.tpEventCreation.currentHour,
+            binding.tpEventCreation.currentMinute)
+
+        if(calendar.time < Calendar.getInstance().time){
+            Toast.makeText(context, "Picking a later date than now may be wise", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val json = JsonObject()
+        json.addProperty("title", binding.etEventCreationTitle.text.toString())
+        json.addProperty("description", binding.etEventCreationDescription.text.toString())
+        json.addProperty("date", format.format(calendar.time).toString()) //"2022-01-14T05:03:00Z"
+        json.addProperty("geolocation", binding.etEventCreationGeolocation.text.toString())
+        json.addProperty("address", binding.etEventCreationAddress.text.toString())
+        json.addProperty("organizer", (activity as MainActivity)?.currentUser?.pk)
+
+        if(binding.cbEventCreationQuota.isChecked){
+            json.addProperty("hasQuota", true)
+            json.addProperty("quota", binding.etEventCreationQuota.text.toString())
+        }else{
+            json.addProperty("hasQuota", false)
+        }
+        Log.d("CALL",json.toString())
+        addViewModel.createEvent(json)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

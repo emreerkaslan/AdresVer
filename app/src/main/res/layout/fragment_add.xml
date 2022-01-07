@@ -43,7 +43,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:background="@color/orange"
-                    android:text="Event" />
+                    android:theme="@style/Platform.MaterialComponents.Light"
+                    android:text="Event"
+                    android:textColor="@color/blue"/>
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

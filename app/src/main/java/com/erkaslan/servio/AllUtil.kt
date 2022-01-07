@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.gson.JsonObject
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -93,19 +94,18 @@ class AllUtil () {
         return map
     }
 
-    fun validateServiceCreation(service: HashMap<String, String>): HashMap<String, String> {
-        var map = HashMap<String, String>()
-
-        if (service.get("title").isNullOrEmpty()) {
-            map.put("message", "Title is missing")
-            map.put("result", "false")
-            return map
+    fun validateServiceCreation(service: JsonObject): JsonObject {
+        /*
+        if (service.get("title").isJsonNull || service.get("title").asString.length < 5) {
+            service.addProperty("message", "Title is missing or short")
+            service.addProperty("result", false)
+            return service
         }
 
-        if (service.get("description").isNullOrEmpty()) {
-            map.put("message", "Description is missing")
-            map.put("result", "false")
-            return map
+        if (service.get("description").isJsonNull || service.get("description").asString.length < 5) {
+            service.addProperty("message", "Description is missing or short")
+            service.addProperty("result", false)
+            return service
         }
 
         if (service.get("credits").isNullOrEmpty()) {
@@ -137,8 +137,8 @@ class AllUtil () {
             map.put("result", "false")
             return map
         }
-
         service.put("result", "true")
+        */
         return service
     }
 }
