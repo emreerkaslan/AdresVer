@@ -47,3 +47,18 @@ interface CreateEventInterface {
     fun onCreateEvent(event: Event)
     fun onCreateEventFailure(servioException: ServioException)
 }
+
+interface FeedbackInterface {
+    fun onFeedbackSet(feedbackList: List<Feedback>)
+    fun onFeedbackFailure(servioException: ServioException)
+}
+
+interface FeedbackAddInterface {
+    fun onFeedbackAdded(feedback: Feedback)
+    fun onFeedbackFailure(servioException: ServioException)
+}
+
+interface EventUpdateInterface {
+    fun onEventUpdated(event: Event)
+    fun onEventFailure(servioException: ServioException)
+}

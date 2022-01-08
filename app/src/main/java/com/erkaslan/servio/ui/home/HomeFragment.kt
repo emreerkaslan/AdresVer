@@ -7,21 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.databinding.FragmentHomeBinding
 import com.erkaslan.servio.manager.RunOnceManager
 import com.erkaslan.servio.model.*
 import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import android.R
 import androidx.fragment.app.commit
-import com.erkaslan.servio.databinding.FragmentServiceDetailBinding
 
 
 @AndroidEntryPoint
@@ -66,7 +58,6 @@ class HomeFragment : Fragment(), HomeActionListener {
                         } else {
                             (binding.rvHomepage.adapter as HomeAdapter).homeRowList.add(HomeRowItem.ServicesAround(listData))
                         }
-                        Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
                         (binding.rvHomepage.adapter as HomeAdapter).notifyDataSetChanged()
                     }else {
                         Toast.makeText(context, "Fail", Toast.LENGTH_LONG).show()
@@ -91,7 +82,6 @@ class HomeFragment : Fragment(), HomeActionListener {
                         } else {
                             (binding.rvHomepage.adapter as HomeAdapter).homeRowList.add(HomeRowItem.EventsAround(listData))
                         }
-                        Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
                         (binding.rvHomepage.adapter as HomeAdapter).notifyDataSetChanged()
                     }else {
                         Toast.makeText(context, "Fail", Toast.LENGTH_LONG).show()
@@ -128,7 +118,6 @@ class HomeFragment : Fragment(), HomeActionListener {
             replace(id, EventDetailFragment(event))
         }
     }
-
 }
 
 interface HomeActionListener {

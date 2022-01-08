@@ -29,9 +29,9 @@ data class Service(
     @SerializedName("taker")
     @Expose
     var taker: List<Int>? = null,
-    @SerializedName("feedbackGiven")
+    @SerializedName("feedbackList")
     @Expose
-    var feedbackGiven: Boolean = false,
+    var feedbackList: List<Int>?,
     @SerializedName("recurring")
     @Expose
     var recurring: Boolean?  = null,

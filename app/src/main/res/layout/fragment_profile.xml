@@ -98,11 +98,22 @@
                     app:layout_constraintTop_toBottomOf="@+id/et_password_register"
                     android:hint="Password Again"
                     android:inputType="textPassword" />
+                <TextView
+                    android:id="@+id/tv_pick_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    app:layout_constraintTop_toBottomOf="@+id/et_password_again_register"
+                    android:background="@color/orange"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15dp"
+                    android:text="Pick Profile Picture"/>
                 <EditText
                     android:id="@+id/et_email_register"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/et_height"
-                    app:layout_constraintTop_toBottomOf="@+id/et_password_again_register"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_pick_image"
                     android:hint="Email"/>
                 <EditText
                     android:id="@+id/et_bio_register"
@@ -128,11 +139,22 @@
                     android:layout_height="@dimen/et_height"
                     app:layout_constraintTop_toBottomOf="@+id/et_competency_register"
                     android:hint="Enter Your location"/>
+                <TextView
+                    android:id="@+id/tv_map_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/et_height"
+                    app:layout_constraintTop_toBottomOf="@+id/et_geolocation_register"
+                    android:background="@color/orange"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="15dp"
+                    android:text="Pick Map Location"/>
                 <Button
                     android:id="@+id/btn_signup"
                     android:layout_width="100dp"
                     android:layout_height="@dimen/et_height"
-                    app:layout_constraintTop_toBottomOf="@id/et_geolocation_register"
+                    app:layout_constraintTop_toBottomOf="@id/tv_map_register"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:text="@string/signup"/>

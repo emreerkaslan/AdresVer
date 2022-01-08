@@ -12,10 +12,11 @@ import com.erkaslan.servio.databinding.FragmentMyServicesBinding
 import com.erkaslan.servio.model.Event
 import com.erkaslan.servio.model.GenericResult
 import com.erkaslan.servio.model.Service
+import com.erkaslan.servio.model.User
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyServicesFragment()  : Fragment(), HomeActionListener {
+class MyServicesFragment(var myService: Boolean, val user: Int)  : Fragment(), HomeActionListener {
     private var _binding: FragmentMyServicesBinding? = null
     private val binding get() = _binding!!
     private lateinit var detailViewModel: DetailViewModel
@@ -29,7 +30,13 @@ class MyServicesFragment()  : Fragment(), HomeActionListener {
 
     fun initViews(){
         if((activity as MainActivity).currentUser!=null){
-            detailViewModel.getUserServices((activity as MainActivity).currentUser?.pk ?: 0)
+            if(!myService){
+                binding.tvMyServiceList.text = "Services"
+                detailViewModel.getUserServices((activity as MainActivity).token?.token ?: "", user)
+            } else {
+                detailViewModel.getUserServices((activity as MainActivity).token?.token ?: "",(activity as MainActivity).currentUser?.pk ?: 0)
+            }
+
         }
     }
 

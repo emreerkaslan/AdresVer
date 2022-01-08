@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.erkaslan.servio.model.*
+import com.google.gson.JsonObject
 import org.json.JSONObject
 
 class DetailViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,6 +35,20 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     val requestedServiceMutableLiveData: MutableLiveData<GenericResult<Service>>?
         get() = _requestedServiceMutableLiveData
 
+    private var _feedbackListMutableLiveData: MutableLiveData<GenericResult<List<Feedback>>>? = MutableLiveData()
+
+    val feedbackListMutableLiveData: MutableLiveData<GenericResult<List<Feedback>>>?
+        get() = _feedbackListMutableLiveData
+
+    private var _feedbackMutableLiveData: MutableLiveData<GenericResult<Feedback>>? = MutableLiveData()
+
+    val feedbackMutableLiveData: MutableLiveData<GenericResult<Feedback>>?
+        get() = _feedbackMutableLiveData
+
+    private var _eventMutableLiveData: MutableLiveData<GenericResult<Event>>? = MutableLiveData()
+
+    val eventMutableLiveData: MutableLiveData<GenericResult<Event>>?
+        get() = _eventMutableLiveData
 
     fun getProvider(pk: Int){
         repository.getUser(pk , object: UserInterface {
@@ -47,8 +62,8 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun getRequesters(data: JSONObject){
-        repository.getUsers(data , object: UserListInterface {
+    fun getRequesters(token: String, data: JSONObject){
+        repository.getUsers(token, data , object: UserListInterface {
             override fun onUserListResponse(userList: List<User>) {
                 requestersMutableLiveData?.value = GenericResult.Success(userList)
             }
@@ -59,8 +74,8 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun getUserServices(id: Int) {
-        repository.getUserServices(id, object: AllServicesInterface {
+    fun getUserServices(token: String,id: Int) {
+        repository.getUserServices(token, id, object: AllServicesInterface {
             override fun onAllServicesTaken(listOfServices: List<Service>) {
                 userServicesMutableLiveData?.value = GenericResult.Success(listOfServices)
             }
@@ -68,8 +83,8 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun acceptRequest(service:Int, user:Int) {
-        repository.acceptRequest(service, user, object: CreateServiceInterface{
+    fun acceptRequest(token: String, service:Int, user:Int) {
+        repository.acceptRequest(token, service, user, object: CreateServiceInterface{
             override fun onCreateService(service: Service) {
                 serviceMutableLiveData?.value = GenericResult.Success(service)
                 GenericResult.Success(service).data.requests
@@ -81,8 +96,8 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun declineRequest(service:Int, user:Int) {
-        repository.declineRequest(service, user, object: CreateServiceInterface{
+    fun declineRequest(token: String, service:Int, user:Int) {
+        repository.declineRequest(token, service, user, object: CreateServiceInterface{
             override fun onCreateService(service: Service) {
                 serviceMutableLiveData?.value = GenericResult.Success(service)
                 GenericResult.Success(service).data.requests
@@ -94,8 +109,8 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun addRequest(service:Int, user:Int) {
-        repository.addRequest(service, user, object: CreateServiceInterface{
+    fun addRequest(token: String, service:Int, user:Int) {
+        repository.addRequest(token, service, user, object: CreateServiceInterface{
             override fun onCreateService(service: Service) {
                 requestedServiceMutableLiveData?.value = GenericResult.Success(service)
                 GenericResult.Success(service).data.requests
@@ -103,6 +118,62 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
 
             override fun onCreateServiceFailure(servioException: ServioException) {
                 requestedServiceMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun addServiceFeedback(token: String, service:Int, feedback:Int) {
+        repository.addServiceFeedback(token, service, feedback, object: CreateServiceInterface{
+            override fun onCreateService(service: Service) {
+            }
+
+            override fun onCreateServiceFailure(servioException: ServioException) {
+            }
+        })
+    }
+
+    fun getFeedbacks(data: JSONObject) {
+        repository.getFeedbacks(data, object: FeedbackInterface{
+            override fun onFeedbackSet(feedbackList: List<Feedback>) {
+                feedbackListMutableLiveData?.value = GenericResult.Success(feedbackList)
+            }
+
+            override fun onFeedbackFailure(servioException: ServioException) {
+                feedbackListMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun addFeedback(token: String, data: JsonObject) {
+        repository.addFeedback(token, data, object: FeedbackAddInterface{
+            override fun onFeedbackAdded(feedback: Feedback) {
+                feedbackMutableLiveData?.value = GenericResult.Success(feedback)
+            }
+
+            override fun onFeedbackFailure(servioException: ServioException) {
+                feedbackMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun attend(token: String, event: Int, user: Int) {
+        repository.attend(token, event, user, object: EventUpdateInterface{
+            override fun onEventUpdated(event: Event) {
+                eventMutableLiveData?.value = GenericResult.Success(event)
+            }
+
+            override fun onEventFailure(servioException: ServioException) {
+                eventMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun addCredits(token: String, user: Int, credits: Int){
+        repository.addCredits(token, user, credits , object: UserInterface {
+            override fun onUserResponse(user: User) {
+            }
+
+            override fun onUserFailure(servioException: ServioException) {
             }
         })
     }

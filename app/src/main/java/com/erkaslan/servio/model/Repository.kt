@@ -41,9 +41,9 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Gets services belonging to a user pk
-    fun getUserServices(id: Int, serviceInterface: AllServicesInterface){
+    fun getUserServices(token: String, id: Int, serviceInterface: AllServicesInterface){
         userService = getClient().create(UserService::class.java)
-        var service = userService.getServices(id)
+        var service = userService.getServices("Token " + token, id)
 
         service.enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
@@ -170,9 +170,9 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Gets a set of users by pk list
-    fun getUsers(data: JSONObject, userListInterface: UserListInterface){
+    fun getUsers(token: String, data: JSONObject, userListInterface: UserListInterface){
         userService = getClient().create(UserService::class.java)
-        var users = userService.getUsers(data)
+        var users = userService.getUsers("Token " + token, data)
 
         users.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
@@ -212,8 +212,8 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Creates service
-    fun createService(service: JsonObject, createServiceInterface: CreateServiceInterface){
-        var service = getClient().create(UserService::class.java).createService(service)
+    fun createService(token: String, service: JsonObject, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).createService("Token " + token, service)
         service.enqueue(object : Callback<Service> {
             override fun onResponse(call: Call<Service>, response: Response<Service>) {
                 if (response.isSuccessful) {
@@ -230,8 +230,8 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Accepts request
-    fun acceptRequest(service: Int, user: Int, createServiceInterface: CreateServiceInterface){
-        var service = getClient().create(UserService::class.java).acceptRequest(service, user)
+    fun acceptRequest(token: String, service: Int, user: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).acceptRequest("Token " + token, service, user)
         Log.d("ACCEPT", service.toString() +" "+user.toString() )
         service.enqueue(object : Callback<Service> {
             override fun onResponse(call: Call<Service>, response: Response<Service>) {
@@ -250,8 +250,8 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Declines request
-    fun declineRequest(service: Int, user: Int, createServiceInterface: CreateServiceInterface){
-        var service = getClient().create(UserService::class.java).declineRequest(service, user)
+    fun declineRequest(token: String, service: Int, user: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).declineRequest("Token " + token, service, user)
         service.enqueue(object : Callback<Service> {
             override fun onResponse(call: Call<Service>, response: Response<Service>) {
                 if (response.isSuccessful) {
@@ -268,8 +268,8 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     }
 
     //Adds request
-    fun addRequest(service: Int, user: Int, createServiceInterface: CreateServiceInterface){
-        var service = getClient().create(UserService::class.java).addRequest(service, user)
+    fun addRequest(token: String, service: Int, user: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).addRequest("Token " + token, service, user)
         service.enqueue(object : Callback<Service> {
             override fun onResponse(call: Call<Service>, response: Response<Service>) {
                 if (response.isSuccessful) {
@@ -285,9 +285,45 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
         })
     }
 
+    //Adds feedback to service
+    fun addServiceFeedback(token: String, service: Int, feedback: Int, createServiceInterface: CreateServiceInterface){
+        var service = getClient().create(UserService::class.java).addServiceFeedback("Token " + token, service, feedback)
+        service.enqueue(object : Callback<Service> {
+            override fun onResponse(call: Call<Service>, response: Response<Service>) {
+                if (response.isSuccessful) {
+                    createServiceInterface.onCreateService(response.body() as Service)
+                } else {
+                    createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Add"))
+                }
+            }
+
+            override fun onFailure(call: Call<Service>, t: Throwable) {
+                createServiceInterface.onCreateServiceFailure(ServioException("Failed Request Add"))
+            }
+        })
+    }
+
+    //Adds credits
+    fun addCredits(token: String, user: Int, credits: Int, userInterface: UserInterface){
+        var service = getClient().create(UserService::class.java).addCredits("Token " + token, user, credits)
+        service.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    userInterface.onUserResponse(response.body() as User)
+                } else {
+                    userInterface.onUserFailure(ServioException("Failed Request Add"))
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                userInterface.onUserFailure(ServioException("Failed Request Add"))
+            }
+        })
+    }
+
     //Creates event
-    fun createEvent(map: JsonObject, createEventInterface: CreateEventInterface){
-        var event = getClient().create(UserService::class.java).createEvent(map)
+    fun createEvent(token:String, map: JsonObject, createEventInterface: CreateEventInterface){
+        var event = getClient().create(UserService::class.java).createEvent("Token " + token, map)
         event.enqueue(object : Callback<Event> {
             override fun onResponse(call: Call<Event>, response: Response<Event>) {
                 if (response.isSuccessful) {
@@ -299,6 +335,71 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
             override fun onFailure(call: Call<Event>, t: Throwable) {
                 createEventInterface.onCreateEventFailure(ServioException("Failed Service Creation"))
+            }
+        })
+    }
+
+    //Adds user to attendees
+    fun attend(token:String, event: Int, user: Int, eventUpdateInterface: EventUpdateInterface){
+        var event = getClient().create(UserService::class.java).attend("Token " + token, event, user)
+        event.enqueue(object : Callback<Event> {
+            override fun onResponse(call: Call<Event>, response: Response<Event>) {
+                if (response.isSuccessful) {
+                    eventUpdateInterface.onEventUpdated(response.body() as Event)
+                } else {
+                    eventUpdateInterface.onEventFailure(ServioException("Failed Event Update"))
+                }
+            }
+
+            override fun onFailure(call: Call<Event>, t: Throwable) {
+                eventUpdateInterface.onEventFailure(ServioException("Failed Event Update"))
+            }
+        })
+    }
+
+    //Creates Feedback
+    fun addFeedback(token: String, data: JsonObject, feedbackAddInterface: FeedbackAddInterface){
+        userService = getClient().create(UserService::class.java)
+        var feedback = userService.addFeedback("Token " + token, data)
+
+        feedback.enqueue(object : Callback<Feedback> {
+            override fun onResponse(call: Call<Feedback>, response: Response<Feedback>) {
+                if (response.isSuccessful) {
+                    feedbackAddInterface.onFeedbackAdded(response.body() as Feedback)
+                } else if (response.code() == 400) {
+                    feedbackAddInterface.onFeedbackFailure(ServioException("Feedback addition failed"))
+                }
+                else{
+                    feedbackAddInterface.onFeedbackFailure(ServioException("Feedback addition failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<Feedback>, t: Throwable) {
+                feedbackAddInterface.onFeedbackFailure(ServioException("Feedback addition failed"))
+            }
+        })
+    }
+
+    //Gets a set of feedbacks by pk list
+    fun getFeedbacks(data: JSONObject, feedbackInterface: FeedbackInterface){
+        userService = getClient().create(UserService::class.java)
+        var feedbacks = userService.getFeedbacks(data)
+
+        feedbacks.enqueue(object : Callback<List<Feedback>> {
+            override fun onResponse(call: Call<List<Feedback>>, response: Response<List<Feedback>>) {
+                Log.d("FEEDREPO", response.toString())
+                if (response.isSuccessful) {
+                    feedbackInterface.onFeedbackSet(response.body() as List<Feedback>)
+                } else if (response.code() == 400) {
+                    feedbackInterface.onFeedbackFailure(ServioException("Feedback list fetch failed"))
+                }
+                else{
+                    feedbackInterface.onFeedbackFailure(ServioException("Feedback list fetch failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<List<Feedback>>, t: Throwable) {
+                feedbackInterface.onFeedbackFailure(ServioException("Feedback list fetch failed"))
             }
         })
     }

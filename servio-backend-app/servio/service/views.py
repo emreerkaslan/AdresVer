@@ -10,6 +10,7 @@ from .serializers import ServiceSerializer
 
 class ServiceCreate(generics.CreateAPIView):
     # API endpoint that allows creation of a new Service
+    permission_classes(IsAuthenticated)
     queryset = Service.objects.all(),
     serializer_class = ServiceSerializer
 
@@ -39,6 +40,7 @@ class ServiceDelete(generics.RetrieveDestroyAPIView):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def serviceCreate(request):
     data = request.data
     print(data)
@@ -87,6 +89,7 @@ def getService(request, pk):
         return JsonResponse(TypeError, status=400)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def acceptRequest(request, service, requestmaker):
     try:
         service = Service.objects.get(pk=service)
@@ -103,6 +106,7 @@ def acceptRequest(request, service, requestmaker):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def declineRequest(request, service, requestmaker):
     try:
         service = Service.objects.get(pk=service)
@@ -118,6 +122,7 @@ def declineRequest(request, service, requestmaker):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addRequest(request, service, requestmaker):
     try:
         service = Service.objects.get(pk=service)
@@ -148,4 +153,20 @@ def removeRequest(request, service, requestmaker):
         return JsonResponse(serializer.data)
     else:
         serializer = ServiceSerializer(service)
+        return JsonResponse(serializer.errors, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addFeedback(request, service, feedback):
+    try:
+        print(service)
+        serv = Service.objects.get(pk=service)
+    except Service.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'POST':
+        serv.feedbackList.add(feedback)
+        serializer = ServiceSerializer(serv)
+        return Response(serializer.data)
+    else:
+        serializer = ServiceSerializer(serv)
         return JsonResponse(serializer.errors, status=400)

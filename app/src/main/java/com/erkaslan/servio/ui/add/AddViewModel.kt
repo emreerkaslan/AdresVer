@@ -23,8 +23,8 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         get() = _eventCreatedLiveData
 
 
-    fun createService(service: JsonObject){
-        repository.createService(service, object: CreateServiceInterface {
+    fun createService(token: String, service: JsonObject){
+        repository.createService(token, service, object: CreateServiceInterface {
             override fun onCreateService(service: Service) {
                 serviceCreatedMutableLiveData.value = GenericResult.Success(service)
             }
@@ -35,8 +35,8 @@ class AddViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    fun createEvent(event: JsonObject){
-        repository.createEvent(event, object: CreateEventInterface {
+    fun createEvent(token: String, event: JsonObject){
+        repository.createEvent(token, event, object: CreateEventInterface {
             override fun onCreateEvent(event: Event) {
                 eventCreatedMutableLiveData.value = GenericResult.Success(event)
             }

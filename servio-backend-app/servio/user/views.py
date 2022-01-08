@@ -93,6 +93,7 @@ def getFeedback(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getService(request, pk):
     print(pk)
     try:
@@ -181,6 +182,7 @@ def userCreate(request):
     return JsonResponse(serializer.data, status=201)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def getUsers(request):
     data = request.data["nameValuePairs"]['data']['values']
     print(data)
@@ -193,4 +195,19 @@ def getUsers(request):
         return Response(serializer.data)
     else:
         serializer = UserSerializer()
+        return JsonResponse(serializer.errors, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addCredits(request, user, credits):
+    try:
+        us = User.objects.get(pk=user)
+    except User.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'POST':
+        us.credits.add(credits)
+        serializer = UserSerializer(us)
+        return Response(serializer.data)
+    else:
+        serializer = UserSerializer(us)
         return JsonResponse(serializer.errors, status=400)

@@ -11,19 +11,32 @@ import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.databinding.FragmentProfileBinding
 import com.erkaslan.servio.model.*
 import dagger.hilt.android.AndroidEntryPoint
-import android.content.SharedPreferences
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.commit
 import com.erkaslan.servio.AllUtil
 import com.erkaslan.servio.MainActivity
-import com.erkaslan.servio.R
 import com.erkaslan.servio.ui.home.MyServicesFragment
-import com.erkaslan.servio.ui.home.ServiceDetailFragment
 import com.google.gson.Gson
-import com.google.gson.JsonObject
+import com.shivtechs.maplocationpicker.LocationPickerActivity
+import com.shivtechs.maplocationpicker.MapUtility
 import org.json.JSONObject
 import java.lang.Exception
+import java.lang.StringBuilder
+import android.content.Intent.createChooser
+import android.app.Activity.RESULT_OK
+import android.content.Context
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import androidx.test.core.app.ApplicationProvider
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.*
+import kotlin.collections.HashMap
 
 
 @AndroidEntryPoint
@@ -36,6 +49,10 @@ class ProfileFragment : Fragment() {
     val editor = prefs?.edit()
     private var util = AllUtil()
     private var username: String = "default"
+    val ADDRESS_PICKER_REQUEST: Int = 0
+    val PICK_IMAGE = 1
+    var photoID: String? = null
+    var imageUri: Uri? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,28 +89,22 @@ class ProfileFragment : Fragment() {
                 map.put("bio", binding.etBioRegister.text.toString())
                 map.put("interest", binding.etInterestRegister.text.toString())
                 map.put("competency", binding.etCompetencyRegister.text.toString())
+                if(photoID!=null){
+                    uploadImage()
+                    map.put("profilePicture", photoID as String)
+                }
                 val gson = Gson()
                 val json = JSONObject(gson.toJson(map))
                 profileViewModel.signup(json)
-/*
-                val validation = util.validateSignup(
-                    binding.etUsernameRegister.text.toString(),
-                    binding.etNameRegister.text.toString(),
-                    binding.etPasswordRegister.toString(),
-                    binding.etPasswordAgainRegister.text.toString(),
-                    binding.etEmailRegister.text.toString(),
-                    binding.etGeolocationRegister.text.toString(),
-                    binding.etBioRegister.text.toString(),
-                    binding.etInterestRegister.text.toString(),
-                    binding.etCompetencyRegister.text.toString(),
-                )
+            }
 
-                if(validation.keys.first().equals(false)){
-                    Toast.makeText(context, validation.get(key = false), Toast.LENGTH_LONG).show()
-                } else {
-                    profileViewModel.signup(map)
-                }
-                */
+            binding.tvMapRegister.setOnClickListener {
+                val i = Intent(activity, LocationPickerActivity::class.java)
+                startActivityForResult(i, ADDRESS_PICKER_REQUEST)
+            }
+
+            binding.tvPickImage.setOnClickListener {
+                chooseImage();
             }
         } else {
             binding.currentUser = (activity as MainActivity).currentUser
@@ -115,7 +126,7 @@ class ProfileFragment : Fragment() {
                 val id = this.id
                 fragmentManager?.commit {
                     detach(this@ProfileFragment)
-                    replace(id, MyServicesFragment())
+                    replace(id, MyServicesFragment(true, 0))
                 }
             }
         }
@@ -130,7 +141,6 @@ class ProfileFragment : Fragment() {
                     it.data.let { token ->
                         prefs?.edit()?.putString("token", it.toString())?.commit()
                         (activity as MainActivity).token = token
-                        Toast.makeText(context, "Token: " + token, Toast.LENGTH_LONG).show()
                     }
                     profileViewModel.loginCheck(it.data.token, username)
                 }
@@ -174,5 +184,69 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADDRESS_PICKER_REQUEST) {
+            try {
+                if (data != null && data.getStringExtra(MapUtility.ADDRESS) != null) {
+                    // String address = data.getStringExtra(MapUtility.ADDRESS);
+                    val currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0)
+                    val currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0)
+                    val completeAddress = data.getBundleExtra("fullAddress")
+                    /* data in completeAddress bundle
+                    "fulladdress"
+                    "city"
+                    "state"
+                    "postalcode"
+                    "country"
+                    "addressline1"
+                    "addressline2"
+                     */
+                    val addres = StringBuilder().append("addressline2: ").append(
+                            completeAddress!!.getString("addressline2")
+                        ).append("\ncity: ").append(
+                            completeAddress.getString("city")
+                        ).append("\npostalcode: ").append(
+                            completeAddress.getString("postalcode")
+                        ).append("\nstate: ").append(
+                            completeAddress.getString("state")
+                        ).toString()
+
+                    val coordinates = StringBuilder().append("Lat:").append(currentLatitude).append("  Long:").append(currentLongitude).toString()
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            imageUri = data?.data
+            photoID = imageUri.toString()
+        }
+    }
+
+    fun chooseImage() {
+        val gallery = Intent()
+        gallery.type = "image/*"
+        gallery.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(createChooser(gallery, "Pick Image"), PICK_IMAGE)
+    }
+
+    private fun uploadImage() {
+        photoID = UUID.randomUUID().toString()
+        val storageReference: StorageReference = FirebaseStorage.getInstance().getReference().child("Servio/$photoID")
+        val bos = ByteArrayOutputStream()
+        try {
+            val bitmap = MediaStore.Images.Media.getBitmap(ApplicationProvider.getApplicationContext<Context>().getContentResolver(), imageUri)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos)
+            val data: ByteArray = bos.toByteArray()
+            bitmap.recycle()
+            val uploadTask: UploadTask = storageReference.putBytes(data)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 }

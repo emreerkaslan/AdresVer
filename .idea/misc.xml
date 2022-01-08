@@ -9,11 +9,14 @@
         <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.15885416666666666" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.17572463768115942" />
         <entry key="app/src/main/res/layout/fragment_my_services.xml" value="0.1328125" />
+        <entry key="app/src/main/res/layout/fragment_other_profile.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.2954898911353033" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1390625" />
         <entry key="app/src/main/res/layout/fragment_service_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/picker_layout.xml" value="0.1453125" />
         <entry key="app/src/main/res/layout/row_event_item.xml" value="0.19202898550724637" />
         <entry key="app/src/main/res/layout/row_layout_event_list.xml" value="0.19202898550724637" />
+        <entry key="app/src/main/res/layout/row_layout_feedback.xml" value="0.15896739130434784" />
         <entry key="app/src/main/res/layout/row_layout_request.xml" value="0.17119565217391305" />
         <entry key="app/src/main/res/layout/row_layout_service_list.xml" value="0.19202898550724637" />
         <entry key="app/src/main/res/layout/row_service.xml" value="0.18125" />

@@ -15,11 +15,11 @@ data class Feedback(
     var comment: String = "",
     @SerializedName("service")
     @Expose
-    var service: Service,
+    var service: Int,
     @SerializedName("giver")
     @Expose
-    var giver: User,
+    var giver: Int,
     @SerializedName("taker")
     @Expose
-    var taker: User,
+    var taker: Int,
 )

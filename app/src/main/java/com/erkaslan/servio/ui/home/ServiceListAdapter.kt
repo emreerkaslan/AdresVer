@@ -16,7 +16,7 @@ class ServiceListAdapter (var serviceList: List<Service>, val listener: HomeActi
     }
 
     override fun getItemCount(): Int {
-        return if(serviceList.size<5) serviceList.size else 5
+        return serviceList.size//if(serviceList.size<5) serviceList.size else 5
     }
 
     override fun onBindViewHolder(holder: ServiceItemViewHolder, position: Int) {

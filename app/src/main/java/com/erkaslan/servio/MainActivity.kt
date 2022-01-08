@@ -14,6 +14,7 @@ import com.erkaslan.servio.databinding.ActivityMainBinding
 import com.erkaslan.servio.manager.RunOnceManager
 import com.erkaslan.servio.model.*
 import com.google.gson.Gson
+import com.shivtechs.maplocationpicker.MapUtility
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,9 +49,9 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-
         //RunOnceManager().runOnce(this, )
         authenticate(service)
+        MapUtility.apiKey = getResources().getString(R.string.google_maps_key);
     }
 
 

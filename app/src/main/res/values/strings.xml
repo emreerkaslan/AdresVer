@@ -8,6 +8,9 @@
     <string name="login">Login</string>
     <string name="signup">Sign Up</string>
     <string name="home_latest_news">Latest News from Servio Community</string>
+    <string name="google_maps_key">AIzaSyCigg1bpdiEtzVwpokg2GRYnaU2WgBJ1YY</string>
+    <string name="permission_denied">Enabling Location Settings is key to Servio</string>
+    <string name="savelocation">Save Location</string>
 
     <!-- Profile Fragment -->
     <string name="name">Name: %1$s</string>

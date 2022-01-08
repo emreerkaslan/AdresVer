@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .models import Event
 from .serializers import EventSerializer
@@ -8,6 +10,7 @@ from .serializers import EventSerializer
 
 class EventCreate(generics.CreateAPIView):
     # API endpoint that allows creation of a new Event
+    permission_classes = (IsAuthenticated)
     queryset = Event.objects.all(),
     serializer_class = EventSerializer
 
@@ -26,6 +29,7 @@ class EventDetail(generics.RetrieveAPIView):
 
 class EventUpdate(generics.RetrieveUpdateAPIView):
     # API endpoint that allows a Event record to be updated.
+    permission_classes = (IsAuthenticated)
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -36,21 +40,20 @@ class EventDelete(generics.RetrieveDestroyAPIView):
     serializer_class = EventSerializer
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def attend(request, event, attendee):
     try:
         event = Event.objects.get(pk=event)
-        from servio.user.models import User
-        attendee = User.objects.get(pk=attendee)
-    except User.DoesNotExist:
+    except Event.DoesNotExist:
         return HttpResponse(status=404)
-    if request.method == 'PUT':
+    if request.method == 'POST':
         if event.hasQuota and event.quota <= event.attendees.size:
             serializer = EventSerializer(event)
             return JsonResponse(serializer.errors, status=400)
         event.attendees.add(attendee)
         serializer = EventSerializer(event)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
     else:
         serializer = EventSerializer(event)
         return JsonResponse(serializer.errors, status=400)

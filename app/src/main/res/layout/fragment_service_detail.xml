@@ -15,6 +15,19 @@
         <variable
             name="isCurrentUser"
             type="Boolean" />
+
+        <variable
+            name="taken"
+            type="Boolean" />
+
+        <variable
+            name="requested"
+            type="Boolean" />
+
+        <variable
+            name="feedbackGiven"
+            type="Boolean" />
+
         <variable
             name="recurring"
             type="String" />
@@ -118,7 +131,7 @@
             app:layout_constraintTop_toBottomOf="@id/service_detail_description"
             app:layout_constraintStart_toStartOf="parent"
             android:textSize="15sp"
-            android:text='@{"Recurring: " + service.recurring}'
+            android:text='@{"Recurring: " + recurring}'
             android:textColor="@color/black" />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_others_service"
@@ -146,14 +159,12 @@
                 android:textSize="12sp"
                 android:textAlignment="center"
                 android:text="Request Sent!"
-                android:textColor="@color/black"
-                android:visibility="gone"/>
+                android:textColor="@color/black" />
             <EditText
                 android:id="@+id/et_service_detail_others_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/tv_service_detail_others"
-                android:visibility="gone"
                 android:hint="Give a feedback for the service" />
             <RatingBar
                 android:id="@+id/rating_service_detail_feedback"
@@ -162,11 +173,19 @@
                 app:layout_constraintTop_toBottomOf="@id/et_service_detail_others_feedback"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                style="?android:attr/ratingBarStyleIndicator"
+                style="?android:attr/ratingBarStyle"
                 android:numStars="5"
-                android:stepSize="1"
-                android:isIndicator="true" />
+                android:stepSize="1" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_service_detail_feedbacks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/rating_service_detail_feedback"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

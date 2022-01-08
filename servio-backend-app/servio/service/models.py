@@ -12,7 +12,7 @@ class Service(models.Model):
 
     taker = models.ManyToManyField('user.User', related_name="takers", blank=True, null=True)
 
-    feedbackGiven = models.BooleanField(default=False)
+    feedbackList = models.ManyToManyField('feedback.Feedback', related_name="feedbackList", blank=True, null=True)
 
     date = models.DateTimeField(null=True, blank=True)
 

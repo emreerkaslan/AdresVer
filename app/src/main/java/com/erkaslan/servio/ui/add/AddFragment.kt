@@ -3,27 +3,20 @@ package com.erkaslan.servio.ui.add
 import android.content.Context
 import android.content.SharedPreferences
 import android.icu.text.SimpleDateFormat
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.AllUtil
 import com.erkaslan.servio.MainActivity
 import com.erkaslan.servio.databinding.FragmentAddBinding
 import com.erkaslan.servio.model.GenericResult
-import com.erkaslan.servio.model.Service
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.json.JSONObject
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class AddFragment : Fragment() {
@@ -116,7 +109,7 @@ class AddFragment : Fragment() {
             json.addProperty("recurring", false)
         }
         //val result = util.validateServiceCreation(json)
-        addViewModel.createService(json)
+        addViewModel.createService((activity as MainActivity).token?.token ?: "", json)
     }
 
     private fun createEvent(){
@@ -145,7 +138,7 @@ class AddFragment : Fragment() {
             json.addProperty("hasQuota", false)
         }
         Log.d("CALL",json.toString())
-        addViewModel.createEvent(json)
+        addViewModel.createEvent((activity as MainActivity).token?.token ?: "", json)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

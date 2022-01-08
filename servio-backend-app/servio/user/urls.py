@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserList, UserDetail, UserUpdate, UserDelete, login, loginCheck, getFeedback, getService, follow, unfollow, userCreate, getUsers
+from .views import UserList, UserDetail, UserUpdate, UserDelete, login, loginCheck, getFeedback, getService, follow, unfollow, userCreate, getUsers, addCredits
 
 urlpatterns = [
     path('create/', userCreate, name='create-user'),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('<int:pk>/service/', getService, name='user-services'),
     path('follow/<int:follower>/<int:followed>', follow, name='user-follow'),
     path('unfollow/<int:follower>/<int:followed>', unfollow, name='user-unfollow'),
+    path('addcredits/<int:user>/<int:credits>', addCredits, name='user-add-credits'),
 ]
