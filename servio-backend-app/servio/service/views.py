@@ -1,8 +1,11 @@
+from datetime import datetime
 from django.http import HttpResponse, JsonResponse
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import filters
+
 
 from .models import Service
 from .serializers import ServiceSerializer
@@ -19,6 +22,8 @@ class ServiceList(generics.ListAPIView):
     # API endpoint that allows Service to be viewed.
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description', 'geolocation']
 
 
 class ServiceDetail(generics.RetrieveAPIView):
@@ -170,3 +175,30 @@ def addFeedback(request, service, feedback):
     else:
         serializer = ServiceSerializer(serv)
         return JsonResponse(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def checkCredits(request, user):
+    try:
+        services = Service.objects.filter(requests=user).exclude(date__gte=datetime.now())
+        print(services)
+    except Service.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'POST':
+        print("post")
+        for service in services:
+            print(service)
+            for us in service.requests:
+                print(us)
+                if us.pk == user:
+                    print(us.pk)
+                    service.requests.remove(us)
+            #service.requests.remove(user)
+            #service.save()
+        serializer = ServiceSerializer(services)
+        return Response(serializer.data)
+    else:
+        serializer = ServiceSerializer(services)
+        return JsonResponse(serializer.errors, status=400)
+

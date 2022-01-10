@@ -80,6 +80,26 @@ class EventDetailFragment (var event: Event) : Fragment() {
                 else -> {}
             }
         })
+
+        detailViewModel.providerMutableLiveData?.observe(viewLifecycleOwner, {
+            when(it){
+                is GenericResult.Success -> {
+                    val organizer = it.data
+                    binding.organizer = organizer
+                    if(it.data.pk != (activity as MainActivity).currentUser?.pk) {
+                        binding.containerEventDetailGiver.setOnClickListener {
+                            val id = this.id
+                            fragmentManager?.commit {
+                                detach(this@EventDetailFragment)
+                                replace(id, OtherProfileFragment(organizer))
+                            }
+                        }
+                    }
+                }
+                is GenericResult.Failure -> { }
+                else -> {}
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -24,6 +24,9 @@ interface UserService {
     @POST("user/create/")
     fun signup(@Body data: JSONObject): Call<User>
 
+    @GET("user?")
+    fun searchUser(@Query("search") keyword: String): Call<List<User>>
+
     @GET("service/{id}/set/")
     fun getServices(@Header("Authorization") token: String, @Path("id") id: Int): Call<List<Service>>
 
@@ -32,6 +35,9 @@ interface UserService {
 
     @GET("service/")
     fun getAllServices(): Call<List<Service>>
+
+    @GET("service?")
+    fun searchService(@Query("search") keyword: String): Call<List<Service>>
 
     @POST("service/create/")
     fun createService(@Header("Authorization") token: String, @Body service: JsonObject): Call<Service>
@@ -51,6 +57,9 @@ interface UserService {
     @GET("event/{id}")
     fun getEvent(@Path("id") id: Int): Call<Event>
 
+    @GET("event/{id}/set/")
+    fun getEvents(@Header("Authorization") token: String, @Path("id") id: Int): Call<List<Event>>
+
     @GET("event/")
     fun getAllEvents(): Call<List<Event>>
 
@@ -60,6 +69,9 @@ interface UserService {
     @POST("event/attend/{event}/{user}")
     fun attend(@Header("Authorization") token: String, @Path("event") event: Int, @Path("user") user: Int): Call<Event>
 
+    @GET("event?")
+    fun searchEvent(@Query("search") keyword: String): Call<List<Event>>
+
     @POST("feedback/create/")
     fun addFeedback(@Header("Authorization") token: String, @Body event: JsonObject): Call<Feedback>
 
@@ -68,4 +80,13 @@ interface UserService {
 
     @POST("user/addcredits/{user}/{credits}/")
     fun addCredits(@Header("Authorization") token: String, @Path("user") user: Int, @Path("credits") credits: Int): Call<User>
+
+    @POST("service/checkcredits/{user}/")
+    fun checkCredits(@Header("Authorization") token: String, @Path("user") user: Int): Call<List<Service>>
+
+    @POST("user/follow/{follower}/{followed}/")
+    fun follow(@Header("Authorization") token: String, @Path("follower") follower: Int, @Path("followed") followed: Int): Call<User>
+
+    @POST("user/unfollow/{follower}/{followed}/")
+    fun unfollow(@Header("Authorization") token: String, @Path("follower") follower: Int, @Path("followed") followed: Int): Call<User>
 }

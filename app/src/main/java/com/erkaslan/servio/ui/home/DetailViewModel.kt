@@ -25,6 +25,11 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     val userServicesMutableLiveData: MutableLiveData<GenericResult<List<Service>>>?
         get() = _userServicesMutableLiveData
 
+    private var _userEventsMutableLiveData: MutableLiveData<GenericResult<List<Event>>>? = MutableLiveData()
+
+    val userEventsMutableLiveData: MutableLiveData<GenericResult<List<Event>>>?
+        get() = _userEventsMutableLiveData
+
     private var _serviceMutableLiveData: MutableLiveData<GenericResult<Service>>? = MutableLiveData()
 
     val serviceMutableLiveData: MutableLiveData<GenericResult<Service>>?
@@ -80,6 +85,14 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
                 userServicesMutableLiveData?.value = GenericResult.Success(listOfServices)
             }
 
+        })
+    }
+
+    fun getUserEvents(token: String, id: Int) {
+        repository.getUserEvents(token, id, object: AllEventsInterface {
+            override fun onAllEventsTaken(listOfEvents: List<Event>) {
+                userEventsMutableLiveData?.value = GenericResult.Success(listOfEvents)
+            }
         })
     }
 

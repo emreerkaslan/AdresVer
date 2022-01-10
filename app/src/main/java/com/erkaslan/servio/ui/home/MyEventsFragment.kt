@@ -8,16 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.erkaslan.servio.MainActivity
-import com.erkaslan.servio.databinding.FragmentMyServicesBinding
-import com.erkaslan.servio.model.Event
-import com.erkaslan.servio.model.GenericResult
-import com.erkaslan.servio.model.Service
-import com.erkaslan.servio.model.User
+import com.erkaslan.servio.databinding.FragmentMyEventsBinding
+import com.erkaslan.servio.model.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyServicesFragment(var myService: Boolean, val user: Int)  : Fragment(), HomeActionListener {
-    private var _binding: FragmentMyServicesBinding? = null
+class MyEventsFragment(var myEvent: Boolean, val user: Int)  : Fragment(), HomeActionListener {
+    private var _binding: FragmentMyEventsBinding? = null
     private val binding get() = _binding!!
     private lateinit var detailViewModel: DetailViewModel
 
@@ -30,29 +27,29 @@ class MyServicesFragment(var myService: Boolean, val user: Int)  : Fragment(), H
 
     fun initViews(){
         if((activity as MainActivity).currentUser!=null){
-            if(!myService){
-                binding.tvMyServiceList.text = "Services"
-                detailViewModel.getUserServices((activity as MainActivity).token?.token ?: "", user)
+            if(!myEvent){
+                binding.tvMyEventList.text = "Events"
+                detailViewModel.getUserEvents((activity as MainActivity).token?.token ?: "", user)
             } else {
-                detailViewModel.getUserServices((activity as MainActivity).token?.token ?: "",(activity as MainActivity).currentUser?.pk ?: 0)
+                detailViewModel.getUserEvents((activity as MainActivity).token?.token ?: "",(activity as MainActivity).currentUser?.pk ?: 0)
             }
 
         }
     }
 
     fun initObservers(){
-        detailViewModel.userServicesMutableLiveData?.observe(viewLifecycleOwner, {
+        detailViewModel.userEventsMutableLiveData?.observe(viewLifecycleOwner, {
             when(it) {
                 is GenericResult.Success -> {
-                    binding.rvMyServiceList.adapter = ServiceListAdapter(it.data, this)
-                    (binding.rvMyServiceList.adapter as ServiceListAdapter).notifyDataSetChanged()
+                    binding.rvMyEventList.adapter = EventListAdapter(it.data, this)
+                    (binding.rvMyEventList.adapter as EventListAdapter).notifyDataSetChanged()
                 }
             }
         })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentMyServicesBinding.inflate(inflater, container, false)
+        _binding = FragmentMyEventsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -62,14 +59,14 @@ class MyServicesFragment(var myService: Boolean, val user: Int)  : Fragment(), H
     }
 
     override fun onServiceClicked(service: Service) {
-        val id = this.id
-        fragmentManager?.commit {
-            detach(this@MyServicesFragment)
-            replace(id, ServiceDetailFragment(service))
-        }
     }
 
     override fun onEventClicked(event: Event) {
+        val id = this.id
+        fragmentManager?.commit {
+            detach(this@MyEventsFragment)
+            replace(id, EventDetailFragment(event))
+        }
     }
 
     override fun onUserClicked(user: User) {

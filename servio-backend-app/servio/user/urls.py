@@ -13,7 +13,7 @@ urlpatterns = [
     path('<str:username>/', loginCheck, name='login-check'),
     path('<int:pk>/feedback', getFeedback, name='user-feedbacks'),
     path('<int:pk>/service/', getService, name='user-services'),
-    path('follow/<int:follower>/<int:followed>', follow, name='user-follow'),
-    path('unfollow/<int:follower>/<int:followed>', unfollow, name='user-unfollow'),
+    path('follow/<int:follower>/<int:followed>/', follow, name='user-follow'),
+    path('unfollow/<int:follower>/<int:followed>/', unfollow, name='user-unfollow'),
     path('addcredits/<int:user>/<int:credits>', addCredits, name='user-add-credits'),
 ]

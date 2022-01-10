@@ -153,7 +153,7 @@ class ServiceDetailFragment (var service: Service) : Fragment(), ServiceActionLi
                     val user = (activity as MainActivity).currentUser
                     if(user!=null){
                         user.credits = user.credits - service.credits
-                        detailViewModel.addCredits((activity as MainActivity).token?.token ?: "", service.giver, -service.credits)
+                        detailViewModel.addCredits((activity as MainActivity).token?.token ?: "", user.pk, -service.credits)
                     }
                     (activity as MainActivity).currentUser = user
                     binding.tvServiceDetailOthers.visibility = View.VISIBLE

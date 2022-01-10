@@ -18,7 +18,7 @@ class EventListAdapter (var eventList: List<Event>, val listener: HomeActionList
     }
 
     override fun getItemCount(): Int {
-        return if(eventList.size<5) eventList.size else 5
+        return if (eventList.size<5) eventList.size else 5
     }
 
     override fun onBindViewHolder(holder: EventItemViewHolder, position: Int) {

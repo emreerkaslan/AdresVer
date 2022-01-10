@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.erkaslan.servio.AllUtil
 import com.erkaslan.servio.databinding.RowServiceItemBinding
 import com.erkaslan.servio.model.Service
 
@@ -26,6 +27,7 @@ class ServiceListAdapter (var serviceList: List<Service>, val listener: HomeActi
 
 class ServiceItemViewHolder(var binding: RowServiceItemBinding): RecyclerView.ViewHolder(binding.root){
     companion object {
+        val util = AllUtil()
         fun create (inflater: LayoutInflater, parent: ViewGroup): ServiceItemViewHolder {
             return ServiceItemViewHolder(RowServiceItemBinding.inflate(inflater, parent, false))
         }
@@ -34,7 +36,7 @@ class ServiceItemViewHolder(var binding: RowServiceItemBinding): RecyclerView.Vi
     fun bind(service: Service, listener: HomeActionListener) {
         binding.service = service
         binding.credits = service.credits.toString()
-        if(service.picture != null) { EventItemViewHolder.util.glide(binding.ivService.context, Uri.parse(service.picture), binding.ivService) }
+        if(service.picture != null) { ServiceItemViewHolder.util.glide(binding.ivService.context, Uri.parse(service.picture), binding.ivService) }
         binding.containerServiceItem.setOnClickListener {
             listener.onServiceClicked(service)
         }

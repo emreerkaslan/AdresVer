@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import ServiceCreate, ServiceList, ServiceDetail, ServiceUpdate, ServiceDelete, serviceCreate, getService, \
-    acceptRequest, declineRequest, addRequest, addFeedback
+from .views import ServiceCreate, ServiceList, ServiceDetail, ServiceUpdate, ServiceDelete, getService, \
+    acceptRequest, declineRequest, addRequest, addFeedback, checkCredits
 
 urlpatterns = [
     path('create/', ServiceCreate.as_view(), name='create-service'),
@@ -14,4 +14,5 @@ urlpatterns = [
     path('decline/<int:service>/<int:requestmaker>/', declineRequest, name='service-declinerequest'),
     path('request/<int:service>/<int:requestmaker>/', addRequest, name='service-addrequest'),
     path('feedback/<int:service>/<int:feedback>/', addFeedback, name='service-addfeedbak'),
+    path('checkcredits/<int:user>/', checkCredits, name='service-checkcredits'),
 ]

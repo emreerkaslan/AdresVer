@@ -84,6 +84,28 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
         })
     }
 
+    //Gets events belonging to a user pk
+    fun getUserEvents(token: String, id: Int, eventsInterface: AllEventsInterface){
+        userService = getClient().create(UserService::class.java)
+        var service = userService.getEvents("Token " + token, id)
+
+        service.enqueue(object : Callback<List<Event>> {
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                Log.d("SERV", response.body().toString())
+                if (response.isSuccessful) {
+                    eventsInterface.onAllEventsTaken(response.body() as List<Event>)
+                } else if (response.code() == 400) {
+                    Log.v("VER",response.errorBody().toString());
+                }
+                else{
+                }
+            }
+
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
+            }
+        })
+    }
+
     //Gets a single service with id
     fun getService(id: Int , serviceInterface: ServiceInterface){
         userService = getClient().create(UserService::class.java)
@@ -211,6 +233,70 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
         })
     }
 
+    //Search user
+    fun searchUser(keyword: String, userListInterface: UserListInterface){
+        var service = getClient().create(UserService::class.java).searchUser(keyword)
+        service.enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (response.isSuccessful) {
+                    userListInterface.onUserListResponse(response.body() as List<User>)
+                } else {
+                    userListInterface.onUserListFailure(ServioException("User fetch failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                userListInterface.onUserListFailure(ServioException("User fetch failed"))
+            }
+        })
+    }
+
+    //Follows a user
+    fun follow(token: String, follower: Int, followed: Int, userInterface: UserInterface){
+        userService = getClient().create(UserService::class.java)
+        var users = userService.follow("Token " + token, follower, followed)
+
+        users.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    userInterface.onUserResponse(response.body() as User)
+                } else if (response.code() == 400) {
+                    userInterface.onUserFailure(ServioException("User list fetch failed"))
+                }
+                else{
+                    userInterface.onUserFailure(ServioException("User list fetch failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                userInterface.onUserFailure(ServioException("User list fetch failed"))
+            }
+        })
+    }
+
+    //Unfollows a user
+    fun unfollow(token: String, follower: Int, followed: Int, userInterface: UserInterface){
+        userService = getClient().create(UserService::class.java)
+        var users = userService.unfollow("Token " + token, follower, followed)
+
+        users.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (response.isSuccessful) {
+                    userInterface.onUserResponse(response.body() as User)
+                } else if (response.code() == 400) {
+                    userInterface.onUserFailure(ServioException("User list fetch failed"))
+                }
+                else{
+                    userInterface.onUserFailure(ServioException("User list fetch failed"))
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                userInterface.onUserFailure(ServioException("User list fetch failed"))
+            }
+        })
+    }
+
     //Creates service
     fun createService(token: String, service: JsonObject, createServiceInterface: CreateServiceInterface){
         var service = getClient().create(UserService::class.java).createService("Token " + token, service)
@@ -225,6 +311,22 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
             override fun onFailure(call: Call<Service>, t: Throwable) {
                 createServiceInterface.onCreateServiceFailure(ServioException("Failed Service Creation"))
+            }
+        })
+    }
+
+    //Search service
+    fun searchService(keyword: String, allServicesInterface: AllServicesInterface){
+        var service = getClient().create(UserService::class.java).searchService(keyword)
+        service.enqueue(object : Callback<List<Service>> {
+            override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
+                if (response.isSuccessful) {
+                    allServicesInterface.onAllServicesTaken(response.body() as List<Service>)
+                } else {
+                }
+            }
+
+            override fun onFailure(call: Call<List<Service>>, t: Throwable) {
             }
         })
     }
@@ -321,6 +423,22 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
         })
     }
 
+    //Adds credits
+    fun checkCredits(token: String, user: Int, allServicesInterface: AllServicesInterface){
+        var service = getClient().create(UserService::class.java).checkCredits("Token " + token, user)
+        service.enqueue(object : Callback<List<Service>> {
+            override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
+                if (response.isSuccessful) {
+                    allServicesInterface.onAllServicesTaken(response.body() as List<Service>)
+                } else {
+                }
+            }
+
+            override fun onFailure(call: Call<List<Service>>, t: Throwable) {
+            }
+        })
+    }
+
     //Creates event
     fun createEvent(token:String, map: JsonObject, createEventInterface: CreateEventInterface){
         var event = getClient().create(UserService::class.java).createEvent("Token " + token, map)
@@ -335,6 +453,21 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
             override fun onFailure(call: Call<Event>, t: Throwable) {
                 createEventInterface.onCreateEventFailure(ServioException("Failed Service Creation"))
+            }
+        })
+    }
+
+    //Search event
+    fun searchEvent(keyword: String, allEventsInterface: AllEventsInterface){
+        var service = getClient().create(UserService::class.java).searchEvent(keyword)
+        service.enqueue(object : Callback<List<Event>> {
+            override fun onResponse(call: Call<List<Event>>, response: Response<List<Event>>) {
+                if (response.isSuccessful) {
+                    allEventsInterface.onAllEventsTaken(response.body() as List<Event>)
+                }
+            }
+
+            override fun onFailure(call: Call<List<Event>>, t: Throwable) {
             }
         })
     }

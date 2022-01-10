@@ -30,6 +30,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import androidx.test.core.app.ApplicationProvider
+import com.erkaslan.servio.ui.home.MyEventsFragment
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
@@ -111,14 +112,11 @@ class ProfileFragment : Fragment() {
 
             //Sets logout button click
             binding.tvLogout.setOnClickListener {
-                try {
-                    profileViewModel.logout()
-                    editor?.clear()?.putBoolean("isLoggedIn", false)?.commit()
-                    binding.isLoggedin = false
-                    isLoggedIn = false
-                    Toast.makeText(context, "Logged out successfully", Toast.LENGTH_LONG).show()
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Now is not a good time. May be logout later?", Toast.LENGTH_LONG).show()
+                profileViewModel.logout()
+                val id = this.id
+                fragmentManager?.commit {
+                    detach(this@ProfileFragment)
+                    replace(id, ProfileFragment())
                 }
             }
 
@@ -127,6 +125,14 @@ class ProfileFragment : Fragment() {
                 fragmentManager?.commit {
                     detach(this@ProfileFragment)
                     replace(id, MyServicesFragment(true, 0))
+                }
+            }
+
+            binding.btnEvents.setOnClickListener {
+                val id = this.id
+                fragmentManager?.commit {
+                    detach(this@ProfileFragment)
+                    replace(id, MyEventsFragment(true, 0))
                 }
             }
         }
@@ -161,17 +167,41 @@ class ProfileFragment : Fragment() {
         profileViewModel.currentUserMutableLiveData?.observe(viewLifecycleOwner, {
             when(it){
                 is GenericResult.Success -> {
-                    Toast.makeText(context, "Signed up successfully! You can login " + it.data.username, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Logged in successfully! Enjoy Servio", Toast.LENGTH_LONG).show()
                     prefs?.edit()?.putString("username", it.data.username)?.commit()
                     binding.currentUser = it.data
                     (activity as MainActivity).currentUser = it.data
                     initViews()
                     Log.d("EX", "currentUser: " + it.data.toString())
+                    profileViewModel.checkCredits((activity as MainActivity).token?.token ?: "", it.data.pk)
                 }
                 is GenericResult.Failure -> {
                     Toast.makeText(context, "Something is wrong, try singup again", Toast.LENGTH_LONG).show()
                 }
                 else -> {}
+            }
+        })
+
+        profileViewModel.serviceListMutableLiveData?.observe(viewLifecycleOwner, {
+            when (it) {
+                is GenericResult.Success -> {
+                    var excessCredits = 0
+                    it.data.forEach { excessCredits = excessCredits + it.credits }
+                    if (excessCredits > 0) {
+                        profileViewModel.addCredits(
+                            (activity as MainActivity).token?.token ?: "",
+                            (activity as MainActivity).currentUser?.pk ?: 0,
+                            excessCredits
+                        )
+                    }
+                }
+                is GenericResult.Failure -> {
+                    Toast.makeText(context, "Something is wrong, try singup again", Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    (activity as MainActivity).currentUser = null
+                    (activity as MainActivity).isLoggedIn = false
+                }
             }
         })
     }

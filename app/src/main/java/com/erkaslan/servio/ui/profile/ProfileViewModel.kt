@@ -20,6 +20,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val currentUserMutableLiveData: MutableLiveData<GenericResult<User>>?
         get() = _currentUserLiveData
 
+    private var _serviceListLiveData: MutableLiveData<GenericResult<List<Service>>>? = MutableLiveData()
+
+    val serviceListMutableLiveData: MutableLiveData<GenericResult<List<Service>>>?
+        get() = _serviceListLiveData
+
     fun login(map: HashMap<String, String>){
         repository.login(map, object: LoginInterface{
             override fun onLogin(token: Token) {
@@ -44,6 +49,26 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         })
     }
 
+    fun checkCredits(token: String, user: Int){
+        repository.checkCredits(token, user, object: AllServicesInterface{
+            override fun onAllServicesTaken(serviceList: List<Service>) {
+                serviceListMutableLiveData?.value = GenericResult.Success(serviceList)
+            }
+        })
+    }
+
+    fun addCredits(token: String, user: Int, credits: Int){
+        repository.addCredits(token, user, credits , object: UserInterface {
+            override fun onUserResponse(user: User) {
+                currentUserMutableLiveData?.value = GenericResult.Success(user)
+            }
+
+            override fun onUserFailure(servioException: ServioException) {
+                currentUserMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
     fun signup(map: JSONObject){
         repository.signup(map, object: SignupInterface{
             override fun onSignup(user: User) {
@@ -51,6 +76,30 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
 
             override fun onSignupFailure(servioException: ServioException) {
+                currentUserMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun follow(token: String, follower: Int, followed: Int){
+        repository.follow(token, follower, followed, object: UserInterface{
+            override fun onUserResponse(user: User) {
+                currentUserMutableLiveData?.value = GenericResult.Success(user)
+            }
+
+            override fun onUserFailure(servioException: ServioException) {
+                currentUserMutableLiveData?.value = GenericResult.Failure(servioException)
+            }
+        })
+    }
+
+    fun unfollow(token: String, follower: Int, followed: Int){
+        repository.follow(token, follower, followed, object: UserInterface{
+            override fun onUserResponse(user: User) {
+                currentUserMutableLiveData?.value = GenericResult.Success(user)
+            }
+
+            override fun onUserFailure(servioException: ServioException) {
                 currentUserMutableLiveData?.value = GenericResult.Failure(servioException)
             }
         })

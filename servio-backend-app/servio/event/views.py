@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -19,6 +19,8 @@ class EventList(generics.ListAPIView):
     # API endpoint that allows Event to be viewed.
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description', 'geolocation']
 
 
 class EventDetail(generics.RetrieveAPIView):
@@ -78,3 +80,15 @@ def cancel(request, event, attendee):
     else:
         serializer = EventSerializer(event)
         return JsonResponse(serializer.errors, status=400)
+
+@api_view(['GET'])
+def getEvent(request, pk):
+    print(pk)
+    if request.method == 'GET':
+        events = Event.objects.filter(organizer=pk)
+        serializer = EventSerializer(events, many=True)
+        print(serializer)
+        return Response(serializer.data)
+        #return JsonResponse(serializer.data, status=200)
+    else:
+        return JsonResponse(TypeError, status=400)

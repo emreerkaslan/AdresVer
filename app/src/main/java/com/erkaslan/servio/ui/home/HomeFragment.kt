@@ -14,6 +14,7 @@ import com.erkaslan.servio.manager.RunOnceManager
 import com.erkaslan.servio.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.commit
+import com.erkaslan.servio.ui.profile.OtherProfileFragment
 
 
 @AndroidEntryPoint
@@ -118,9 +119,18 @@ class HomeFragment : Fragment(), HomeActionListener {
             replace(id, EventDetailFragment(event))
         }
     }
+
+    override fun onUserClicked(user: User) {
+        val id = this.id
+        fragmentManager?.commit {
+            detach(this@HomeFragment)
+            replace(id, OtherProfileFragment(user))
+        }
+    }
 }
 
 interface HomeActionListener {
     fun onServiceClicked(service: Service)
     fun onEventClicked(event: Event)
+    fun onUserClicked(user: User)
 }

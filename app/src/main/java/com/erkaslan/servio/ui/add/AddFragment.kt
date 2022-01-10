@@ -113,6 +113,9 @@ class AddFragment : Fragment() {
     }
 
     private fun createEvent(){
+        if(((activity as MainActivity).currentUser?.service?.filter { (it.date ?: Calendar.getInstance().time) > Calendar.getInstance().time } ?: listOf()).size >=10) {
+            Toast.makeText(context, "You can provide maximum of 10 services at a time", Toast.LENGTH_LONG).show()
+        }
         val calendar = Calendar.getInstance()
         var format = SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss'Z'"), Locale.getDefault())
         calendar.set(binding.dpEventCreation.year, binding.dpEventCreation.month, binding.dpEventCreation.dayOfMonth, binding.tpEventCreation.currentHour,

@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +14,8 @@ class UserList(generics.ListAPIView):
     # permission_classes = (IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', 'name', 'bio', 'geolocation', 'competency', 'interest']
 
 
 class UserDetail(generics.RetrieveAPIView):
@@ -111,7 +113,7 @@ def getService(request, pk):
         return JsonResponse(serializer.errors, status=400)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def follow(request, follower, followed):
     try:
@@ -119,10 +121,8 @@ def follow(request, follower, followed):
         followed = User.objects.get(pk=followed)
     except User.DoesNotExist:
         return HttpResponse(status=404)
-    if request.method == 'PUT':
-        following = follower.following
-        following.add(followed)
-        follower.following = following
+    if request.method == 'POST':
+        follower.following.add(followed)
         follower.save()
         serializer = UserSerializer(follower)
         return JsonResponse(serializer.data)
@@ -131,7 +131,7 @@ def follow(request, follower, followed):
         return JsonResponse(serializer.errors, status=400)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def unfollow(request, follower, followed):
     try:
@@ -140,9 +140,7 @@ def unfollow(request, follower, followed):
     except User.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'PUT':
-        following = follower.following
-        following.remove(followed)
-        follower.following = following
+        follower.following.remove(followed)
         follower.save()
         serializer = UserSerializer(follower)
         return JsonResponse(serializer.data)
@@ -202,6 +200,7 @@ def getUsers(request):
 def addCredits(request, user, credits):
     try:
         us = User.objects.get(pk=user)
+        print(us)
     except User.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'POST':
