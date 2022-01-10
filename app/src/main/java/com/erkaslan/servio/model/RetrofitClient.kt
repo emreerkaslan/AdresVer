@@ -7,7 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 object RetrofitClient{
-    var BASE_URL = "http://10.0.2.2:8000/"
+    var BASE_URL = "http://34.225.149.254/"
     private var retrofit: Retrofit? = null
 
     fun getClient(): Retrofit {

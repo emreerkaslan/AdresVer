@@ -22,14 +22,11 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
     fun getAllServices(serviceInterface: AllServicesInterface){
         userService = getClient().create(UserService::class.java)
         var service = userService.getAllServices()
-
         service.enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
-                Log.d("REPO", response.body().toString())
                 if (response.isSuccessful) {
                     serviceInterface.onAllServicesTaken(response.body() as List<Service>)
                 } else if (response.code() == 400) {
-                    Log.v("VER",response.errorBody().toString());
                 }
                 else{
                 }
@@ -47,7 +44,7 @@ class Repository(private val application: Application) : ServiceInterface, AllSe
 
         service.enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
-                Log.d("SERV", response.body().toString())
+                Log.d("TEST**", response.body().toString())
                 if (response.isSuccessful) {
                     serviceInterface.onAllServicesTaken(response.body() as List<Service>)
                 } else if (response.code() == 400) {
