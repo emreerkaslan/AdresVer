@@ -173,8 +173,8 @@ def userCreate(request):
             interest=interest,
             competency=competency,
         )
-    if 'picture' in request.data:
-        user.picture = data.get('picture')
+    if 'profilePicture' in request.data:
+        user.picture = data.get('profilePicture')
     user.save()
     serializer = UserSerializer(user)
     return JsonResponse(serializer.data, status=201)

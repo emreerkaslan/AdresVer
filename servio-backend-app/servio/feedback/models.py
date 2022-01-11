@@ -12,7 +12,7 @@ class Feedback(models.Model):
 
     giver = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='feedback_giver')
 
-    taker = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='feedback_taker')
+    taker = models.ForeignKey('user.User', on_delete=models.PROTECT, related_name='feedback_taker', default=1)
 
     isActive = models.BooleanField(default=True)
 
