@@ -8,7 +8,6 @@ urlpatterns = [
     path('set/', getUsers, name='retrieve-users'),
     path('update/<int:pk>/', UserUpdate.as_view(), name='update-user'),
     path('delete/<int:pk>/', UserDelete.as_view(), name='delete-user'),
-    path('delete/<int:pk>/', UserDelete.as_view(), name='delete-user'),
     path('login/', login, name='login'),
     path('<str:username>/', loginCheck, name='login-check'),
     path('<int:pk>/feedback', getFeedback, name='user-feedbacks'),

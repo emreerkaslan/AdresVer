@@ -10,7 +10,7 @@ from .serializers import EventSerializer
 
 class EventCreate(generics.CreateAPIView):
     # API endpoint that allows creation of a new Event
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
     queryset = Event.objects.all(),
     serializer_class = EventSerializer
 

@@ -151,7 +151,7 @@ def unfollow(request, follower, followed):
 @api_view(['POST'])
 def userCreate(request):
     data = request.data["nameValuePairs"]
-    print(request.data)
+    print(request)
     try:
         username = data.get("username")
         name = data.get("name")
