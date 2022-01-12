@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_service_list_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="15dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:text="Services Around You"
+            android:background="@color/deep_blue"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_service_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:nestedScrollingEnabled="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_service_list_header"
+            app:reverseLayout="false"
+            android:orientation="vertical"/>
+        <TextView
+            android:id="@+id/tv_service_list_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/rv_service_list"
+            android:layout_marginVertical="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/deep_blue"
+            android:textStyle="italic"
+            android:textAlignment="textEnd"
+            android:text="See All >"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
