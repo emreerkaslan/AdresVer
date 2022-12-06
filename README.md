@@ -8,14 +8,14 @@ For detailed information please check out the <a href="https://github.com/emreer
 
 <p float="left">
 
-<img alt="Home" src="https://user-images.githubusercontent.com/67108859/205985239-d3350618-2337-4d59-b609-926521c00b65.png" width="200"/>
-<img width="200" alt="Service Creation" src="https://user-images.githubusercontent.com/67108859/205985222-e763493e-adc5-44ba-9886-db49c73f26cb.png">
+<img alt="Home" src="https://user-images.githubusercontent.com/67108859/205985239-d3350618-2337-4d59-b609-926521c00b65.png" width="300"/>
+<img width="300" alt="Service Creation" src="https://user-images.githubusercontent.com/67108859/205985222-e763493e-adc5-44ba-9886-db49c73f26cb.png">
 
 </p>
 
 <p float="left">
 
-<img width="200" alt="Service" src="https://user-images.githubusercontent.com/67108859/205985232-e495cb21-5bc2-440b-ab64-90d3530d97d8.png">
-<img width="200" alt="Event" src="https://user-images.githubusercontent.com/67108859/205985234-1b22b3f7-ab8a-4a03-a2b8-eeb1a78a8585.png">
+<img width="300" alt="Service" src="https://user-images.githubusercontent.com/67108859/205985232-e495cb21-5bc2-440b-ab64-90d3530d97d8.png">
+<img width="300" alt="Event" src="https://user-images.githubusercontent.com/67108859/205985234-1b22b3f7-ab8a-4a03-a2b8-eeb1a78a8585.png">
 
 </p>
